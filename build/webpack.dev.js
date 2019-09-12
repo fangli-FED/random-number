@@ -59,7 +59,7 @@ const devConfig = {
     disableHostCheck: true,
     contentBase: OUTPUT_PATH,
     host: '0.0.0.0',
-    port: 9526,
+    port: 8526,
     compress: true,
     hot: false,
     inline: false,

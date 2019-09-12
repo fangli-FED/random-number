@@ -3,12 +3,24 @@
   justify-content: center;
   flex-wrap: wrap;
 
+  &-range{
+    width: 70vw;
+    margin-top: 20px;
+
+    .am-list-item .am-list-line .am-list-extra{
+      overflow: visible;
+    }
+  }
+
   &-btn, &-lotterShow{
     width: 70vw;
     margin-top: 20px;
   }
 
   &-lotterShow{
+    display: flex;
+    justify-content: center;
     text-align: center;
+    word-break: break-all;
   }
 }

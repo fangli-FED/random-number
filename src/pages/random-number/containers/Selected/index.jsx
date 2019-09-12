@@ -1,23 +1,13 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 import {
   Button
 } from 'antd-mobile';
 import Navigation from '../../components/Navigation';
-
-
-const generatingData = () => {
-  const data = [];
-  for (let i = 0; i < 5; i++) {
-    data.push({
-      index: i + 1,
-      name: `小王${i}`,
-      number: i
-    });
-  }
-  return data;
-};
+import { listIndexSet } from '../../common/publicFunc';
 
 const param = ['index', 'name', 'number'];
 
@@ -39,7 +29,12 @@ class Selected extends React.Component {
   static propTypes = {
     history: PropTypes.shape({
       goBack: PropTypes.func,
-    }).isRequired
+    }).isRequired,
+    list: PropTypes.arrayOf(PropTypes.shape({
+      index: PropTypes.string,
+      name: PropTypes.string,
+      number: PropTypes.string,
+    })).isRequired,
   }
 
   constructor(props) {
@@ -54,6 +49,7 @@ class Selected extends React.Component {
   }
 
   render() {
+    const { list } = this.props;
     return (
       <div className="lottery">
         <Navigation className="lottery-title" title="摇号结果" />
@@ -62,7 +58,7 @@ class Selected extends React.Component {
             {paramName.map(nameMapping)}
           </div>
           {
-            generatingData().map(dataMapping)
+            listIndexSet(list).map(dataMapping)
           }
         </div>
         <Button className="lottery-btn" onClick={this.backClick}>确定</Button>
@@ -71,4 +67,16 @@ class Selected extends React.Component {
   }
 }
 
-export default withRouter(Selected);
+const mapStateToProps = state => ({
+  ...state.randomList
+});
+
+
+const wrapper = compose(
+  connect(
+    mapStateToProps,
+  ),
+  withRouter,
+);
+
+export default wrapper(Selected);
