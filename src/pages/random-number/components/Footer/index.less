@@ -1,0 +1,82 @@
+@fooHeight: 80px;
+@imgSize: 180px;
+
+.footer{
+  width: 100%;
+  height: @fooHeight;
+  color: white;
+  background-color: rgb(29,83,160);
+  box-sizing: border-box;
+  padding-left: 50px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &-lottery{
+    background-color: rgb(121, 121, 123)
+  }
+
+  &-qrcode{
+    width: @fooHeight;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    &-img{
+      width: @imgSize;
+      height: @imgSize;
+    }
+  }
+  
+  &-leftContent{
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: space-around;
+    // align-items: center;
+    .footer-aelfImg{
+      width: 80px;
+    }
+
+    .footer-introduce{
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      margin-top: 5px;
+    }
+  }
+
+  &-rightContent{
+    margin-right: 50px;
+    display: flex;
+    align-items: center;
+
+    .footer-contact{
+      font-size: 13px;
+    }
+
+    .footer-icona{
+      margin: 0 10px;
+      cursor: pointer;
+    }
+
+    .footer-icon{
+      color: white;
+      font-size: 24px;
+    }
+
+  }
+}
+
+@publicNumberSize: 100px;
+.footer-publicNumber{
+  padding: 0;
+  width: @publicNumberSize;
+  height: @publicNumberSize;
+}
+
+.ant-popover-inner-content{
+  padding: 0;
+}

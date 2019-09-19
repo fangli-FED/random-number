@@ -1,197 +1,52 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import { withTranslation } from 'react-i18next';
+import { If, Then } from 'react-if';
 import PropTypes from 'prop-types';
-import { bindActionCreators, compose } from 'redux';
-import { connect } from 'react-redux';
-import {
-  Button, ActivityIndicator, Toast
-} from 'antd-mobile';
-import AElf from 'aelf-sdk';
-import { localHttp, mnemonic, helloWorldContractName } from '../../../../common/constants';
-import Navigation from '../../components/Navigation';
-import { sleep, listIndexSet } from '../../common/publicFunc';
-import personnelData from '../../common/personnelData.json';
-import { storeRandomList } from '../../actions/randomListInfo';
 import './index.less';
 
-const showData = listIndexSet(personnelData);
-
-const param = ['index', 'name', 'number'];
-
-const dataMapping = data => (
-  <div className="lottery-line" key={`${data.index}-lottery-line`}>
-    {param.map((res, index) => (
-      <div className={`lottery-line-${res}`} key={`lottery-line-${res + index}`}>{data[res]}</div>
-    ))}
-  </div>
-);
-
-const paramName = ['序号', '名字', '号码'];
-
-const nameMapping = (data, index) => (
-  <div className={`lottery-line-${param[index]}`} key={data}>{data}</div>
-);
+const classPrefix = 'lottery';
 
 class Lottery extends React.Component {
-  static defaultProps = {
-    storeRandomList: () => {}
-  }
-
   static propTypes = {
     history: PropTypes.shape({
       push: PropTypes.func,
     }).isRequired,
-    storeRandomList: PropTypes.func
+    t: PropTypes.func.isRequired,
+    i18n: PropTypes.shape({
+      language: PropTypes.string,
+    }).isRequired
   }
 
   constructor(props) {
     super(props);
-    this.state = {
-      animating: false,
-    };
-    this.helloWorldContract = null;
+    this.state = {};
   }
 
-  componentDidMount() {
-    const aelf = new AElf(new AElf.providers.HttpProvider(localHttp));
-    if (!aelf.isConnected()) {
-      console.error('Blockchain is not running');
-    } else {
-      this.aelf = aelf;
-      const { sha256 } = AElf.utils;
-      const wallet = AElf.wallet.getWalletByMnemonic(mnemonic);
-      aelf.chain.getChainStatus()
-        .then(res => aelf.chain.contractAt(res.GenesisContractAddress, wallet))
-        .then(zeroC => zeroC.GetContractAddressByName.call(sha256(helloWorldContractName)))
-        .then(helloWorldAddress => aelf.chain.contractAt(helloWorldAddress, wallet))
-        .then(helloWorldContract => {
-          this.helloWorldContract = helloWorldContract;
-        })
-        .catch(err => {
-          console.log('err', err);
-        });
-    }
-  }
-
-  getList = async (requestRetValue, frequency, sign) => {
-    let getListReadableData = null;
-    await sleep(4000);
-    try {
-      const getRandomTId = await this.helloWorldContract.GetRandomList(requestRetValue.tokenHash);
-
-      // 获取getrandomlist的返回数据，失败抛出错误
-      await sleep(1000);
-      let getRandomData = this.aelf.chain.getTxResult(getRandomTId.TransactionId);
-      if (getRandomData.Status !== 'MINED') {
-        await sleep(3000);
-        getRandomData = await this.aelf.chain.getTxResult(getRandomTId.TransactionId);
-        if (getRandomData.Status !== 'MINED') {
-          throw new Error({ Status: '获取数据失败' });
-        }
-      }
-
-      console.log('getRandomData', getRandomData);
-      if (getRandomData.Status === 'MINED') {
-        // 成功获取，返回数据
-        getListReadableData = JSON.parse(getRandomData.ReadableReturnValue).List;
-        const { storeRandomList: storeList, history } = this.props;
-        storeList(getListReadableData);
-        this.setState({
-          animating: false
-        });
-        history.push('/selected');
-      }
-    } catch (err) {
-      console.log(err, frequency);
-      if (err.Status !== 'MINED' && frequency < 10) {
-        // get等待时间过短重新发送请求，超过10次认为失败
-        const nextFrequency = frequency + 1;
-        await this.getList(requestRetValue, nextFrequency);
-      } else if (sign) {
-        // 第二次发送随机数请求并获取失败，报错
-        this.setState({
-          animating: false
-        });
-        Toast.info('请重试');
-      } else {
-        // 重新获取一次
-        this.lotteryClick(true);
-      }
-    }
-  }
-
-  lotteryClick = async sign => {
-    this.setState({
-      animating: true
-    });
-
-    if (this.helloWorldContract === null) {
-      await sleep(2000);
-    }
-
-    try {
-      const requestListTId = await this.helloWorldContract.RequestRandomList({
-        List: showData,
-        Number: 5
-      });
-
-      await sleep(1000);
-      let requestReturnData = await this.aelf.chain.getTxResult(requestListTId.TransactionId);
-      if (requestReturnData.Status !== 'MINED') {
-        await sleep(3000);
-        requestReturnData = await this.aelf.chain.getTxResult(requestListTId.TransactionId);
-      }
-
-      const requestRetValue = JSON.parse(requestReturnData.ReadableReturnValue);
-
-      await this.getList(requestRetValue, 0, sign);
-    } catch (err) {
-      console.log(err);
-    }
+  historyPush = () => {
+    const { history } = this.props;
+    history.push('/lottery/comment');
   }
 
   render() {
-    const { animating } = this.state;
+    const { t, i18n } = this.props;
     return (
-      <div className="lottery">
-        <Navigation title="标题" className="lottery-title" />
-        <div className="lottery-content">
-          <div className="lottery-line">
-            {paramName.map(nameMapping)}
-          </div>
-          {
-            showData.map(dataMapping)
-          }
+      <div className={classPrefix}>
+        <div className={`${classPrefix}-content`}>
+          <div className={`${classPrefix}-Building`}>{t('Building')}</div>
+          <div className={`${classPrefix}-lotSystem`}>{t('lotSystem')}</div>
+          <If condition={i18n.language !== 'en'}>
+            <Then>
+              <div className={`${classPrefix}-lotSystem-zh`}>The System of House Selection & Lot Number</div>
+            </Then>
+          </If>
+          <button className={`${classPrefix}-lotBtn`} type="button" onClick={this.backClick}>
+            {t('lotNumber')}
+          </button>
         </div>
-        <Button className="lottery-btn" onClick={this.lotteryClick} disabled={animating}>点击摇号</Button>
-
-        <ActivityIndicator
-          toast
-          text="Loading..."
-          animating={animating}
-        />
       </div>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  ...state
-});
-
-const mapDispatchToProps = dispatch => bindActionCreators(
-  {
-    storeRandomList
-  },
-  dispatch
-);
-
-const wrapper = compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
-  withRouter,
-);
-
-export default wrapper(Lottery);
+export default withRouter(withTranslation()(Lottery));

@@ -1,9 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {
-  Button
-} from 'antd-mobile';
 
 class Comment extends React.Component {
   static propTypes = {
@@ -26,7 +23,7 @@ class Comment extends React.Component {
     return (
       <div>
         Comment
-        <Button onClick={this.backClick}>back</Button>
+        <button type="button" onClick={this.backClick}>back</button>
       </div>
     );
   }

@@ -2,21 +2,26 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import AElf from 'aelf-sdk';
+import { withTranslation } from 'react-i18next';
 import {
-  Button, ActivityIndicator, List, InputItem, Toast
-} from 'antd-mobile';
+  Input, Button, Spin, message
+} from 'antd';
 import { If, Then, Else } from 'react-if';
 import { localHttp, mnemonic, consensusContractName } from '../../../../common/constants';
 import { sleep, stringToIntHash } from '../../common/publicFunc';
+import bottomBg from '../../../../static/randomBottomBg.png';
 import './index.less';
 
-
-const inputItemType = 'money';
+const classPrefix = 'home';
 
 class HomePage extends React.Component {
   static propTypes = {
     history: PropTypes.shape({
       push: PropTypes.func,
+    }).isRequired,
+    t: PropTypes.func.isRequired,
+    i18n: PropTypes.shape({
+      language: PropTypes.string,
     }).isRequired
   }
 
@@ -25,10 +30,11 @@ class HomePage extends React.Component {
     this.state = {
       randomNumber: false,
       randomLoading: false,
-      minNumber: 1,
+      minNumber: null,
       minErr: false,
-      maxNumber: 500,
-      maxErr: false
+      maxNumber: null,
+      maxErr: false,
+      inputErrShow: false
     };
     this.aelf = null;
     this.consensusContract = null;
@@ -62,7 +68,6 @@ class HomePage extends React.Component {
     let getRandomReadableData = false;
     try {
       const getRandomTId = await this.consensusContract.GetRandomNumber(requestRandomTId.TransactionId);
-      // console.log('getRandomTId', getRandomTId);
       await sleep(1000);
       let getRandomresult = await this.aelf.chain.getTxResult(getRandomTId.TransactionId);
 
@@ -77,7 +82,6 @@ class HomePage extends React.Component {
         }
       }
 
-      console.log('getRandomresult', getRandomresult);
       if (getRandomresult.Status === 'MINED') {
         // 成功获取，返回数据
         getRandomReadableData = getRandomresult.ReadableReturnValue.replace(/\"/g, '');
@@ -98,7 +102,7 @@ class HomePage extends React.Component {
           randomNumber: getRandomReadableData,
           randomLoading: false
         });
-        Toast.info('请重试');
+        message.info('请重试');
       } else {
         // 重新获取一次
         await this.getClick(true);
@@ -109,9 +113,19 @@ class HomePage extends React.Component {
   }
 
   getClick = async sign => {
+    const {
+      minNumber, maxNumber, minErr, maxErr
+    } = this.state;
+
+    if (maxErr || minErr || !maxNumber || !minNumber) {
+      this.setState({ inputErrShow: true });
+      return;
+    }
+
     this.setState({
       randomLoading: true
     });
+
     if (this.consensusContract === null) {
       await sleep(2000);
     }
@@ -120,108 +134,116 @@ class HomePage extends React.Component {
     await this.getRandom(requestRandomTId, 0, sign);
   }
 
-  lotteryClick = () => {
-    const { history } = this.props;
-    history.push('/lottery');
-  }
-
-  commentClick = () => {
-    const { history } = this.props;
-    history.push('/comment');
-  }
-
-  minNumberChange = minNumber => {
+  minNumberChange = e => {
+    const minNumber = e.target.value;
     const { maxNumber } = this.state;
     let minErr = false;
-    if (maxNumber && minNumber - maxNumber >= 0) {
+    if (minNumber < 0 || (maxNumber && minNumber - maxNumber >= 0)) {
       minErr = true;
     }
-    this.setState({ minNumber, minErr });
+    this.setState({ minNumber, minErr, inputErrShow: false });
   }
 
-  onMinErrorClick = () => {
-    const { minErr } = this.state;
-    if (minErr) {
-      Toast.info('最小值要小于最大值');
-    }
-  }
-
-  maxNumberChange = maxNumber => {
+  maxNumberChange = e => {
+    const maxNumber = e.target.value;
     const { minNumber } = this.state;
     let maxErr = false;
     if (minNumber && maxNumber - minNumber <= 0) {
       maxErr = true;
     }
-    this.setState({ maxNumber, maxErr });
-  }
-
-  onMaxErrorClick = () => {
-    const { maxErr } = this.state;
-    if (maxErr) {
-      Toast.info('最大值要大于最小值');
-    }
+    this.setState({ maxNumber, maxErr, inputErrShow: false });
   }
 
   render() {
     const {
-      randomNumber, randomLoading, minNumber, maxNumber, minErr, maxErr
+      randomNumber, randomLoading, minNumber, maxNumber, minErr, maxErr, inputErrShow
     } = this.state;
+    const { t, i18n } = this.props;
+    const inputErr = Boolean(inputErrShow && (maxErr || minErr || !maxNumber || !minNumber));
     return (
-      <div className="home">
-        <List className="home-range">
-          <InputItem
-            clear
-            type={inputItemType}
-            onChange={this.minNumberChange}
-            value={minNumber}
-            disabled={randomLoading}
-            error={minErr}
-            onErrorClick={this.onMinErrorClick}
-          >
-            最小值
-          </InputItem>
-          <InputItem
-            clear
-            type={inputItemType}
-            onChange={this.maxNumberChange}
-            value={maxNumber}
-            disabled={randomLoading}
-            error={maxErr}
-            onErrorClick={this.onMaxErrorClick}
-          >
-            最大值
-          </InputItem>
-        </List>
-        <Button
-          className="home-btn"
-          onClick={this.getClick}
-          disabled={randomLoading || maxErr || minErr || !maxNumber || !minNumber}
-        >
-          点击获取
-        </Button>
-        <div className="home-lotterShow">
-          <If condition={randomLoading}>
-            <Then>
-              <ActivityIndicator
-                text="Loading..."
+      <div className={classPrefix}>
+        <div className={`${classPrefix}-content`}>
+          <div className={`${classPrefix}-leftContent`}>
+            <div className={`${classPrefix}-text-aelf`}>{t('aelf')}</div>
+            <div className={`${classPrefix}-text-generation`}>{t('generationRandomNumber')}</div>
+            <If condition={i18n.language !== 'en'}>
+              <Then>
+                <div className={`${classPrefix}-text-generation-zh`}>The Generation Plan of Random Number</div>
+              </Then>
+            </If>
+            <a className={`${classPrefix}-learnMore`} href="https://github.com/aelfProject">{t('learnMore')}</a>
+          </div>
+          <div className={`${classPrefix}-rightContent`}>
+            <div className={`${classPrefix}-generationRandom`}>{t('generationRandom')}</div>
+            <div className={`${classPrefix}-input`}>
+              <span className={`${classPrefix}-input-text`}>
+                {t('minNumber')}
+              </span>
+              <Input
+                className={`${classPrefix}-input-frame`}
+                allowClear
+                onChange={this.minNumberChange}
+                value={minNumber}
+                placeholder={t('minPlaceholder')}
+                disabled={randomLoading}
+                // defaultValue={t('minPlaceholder')}
               />
-            </Then>
-            <Else>
-              <>
-                {randomNumber
-                  ? stringToIntHash(randomNumber, parseInt(minNumber, 10), parseInt(maxNumber, 10))
-                  : '点击获取随机数'
-                }
-              </>
-            </Else>
-          </If>
+            </div>
+            <div className={`${classPrefix}-input`}>
+              <span className={`${classPrefix}-input-text`}>
+                {t('maxNumber')}
+              </span>
+              <Input
+                className={`${classPrefix}-input-frame`}
+                allowClear
+                onChange={this.maxNumberChange}
+                value={maxNumber}
+                placeholder={t('maxPlaceholder')}
+                disabled={randomLoading}
+                // defaultValue={t('minPlaceholder')}
+              />
+            </div>
+            <Button
+              type="primary"
+              className={`${classPrefix}-generate`}
+              onClick={this.getClick}
+              disabled={randomLoading}
+            >
+              {t('generate')}
+            </Button>
+            <div
+              className={`${classPrefix}-inputErr ${inputErr ? '' : 'hidden'}`}
+            >
+              {t('inputError')}
+            </div>
+            <div className={`${classPrefix}-input`}>
+              <span className={`${classPrefix}-input-text`}>
+                {t('result')}
+              </span>
+              <If condition={randomLoading}>
+                <Then>
+                  <Spin />
+                </Then>
+                <Else>
+                  <Input
+                    className={`${classPrefix}-input-frame`}
+                    value={
+                      randomNumber
+                        ? stringToIntHash(randomNumber, parseInt(minNumber, 10), parseInt(maxNumber, 10))
+                        : ''
+                    }
+                    disabled
+                  />
+                </Else>
+              </If>
+
+            </div>
+          </div>
         </div>
-        {/* <div className="home-lotterShow">{randomNumber}</div> */}
-        <Button className="home-btn" onClick={this.lotteryClick}>简单摇号示例</Button>
-        <Button className="home-btn" onClick={this.commentClick}>讲解</Button>
+        <img alt="" className={`${classPrefix}-bottom-bg`} src={bottomBg} />
       </div>
     );
   }
 }
 
-export default withRouter(HomePage);
+export default withRouter(withTranslation()(HomePage));

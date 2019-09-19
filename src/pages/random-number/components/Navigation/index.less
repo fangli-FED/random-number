@@ -1,0 +1,59 @@
+@navHeight: 80px;
+@activeColor: rgb(113,153,221);
+
+.navigation{
+
+  width: 100%;
+  height: @navHeight;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+
+  .routerActive{
+    color: @activeColor;
+    text-decoration: none;
+    box-shadow: 0 1px;
+  }
+  
+  .button-style-clear{
+    background-color: inherit;
+    border:none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 15px;
+    outline:none;
+
+    &:hover{
+      color:@activeColor;
+    }
+
+  }
+
+  &-logo{
+    margin: 0 50px;
+    width: 180px;
+    height: 30px;
+  }
+
+  &-randomNumber, &-lottery{
+    // min-width: 160px;
+    // width: 12%;
+    // text-align: center;
+    margin-left: 50px;
+  }
+
+  &-space{
+    flex: 1;
+  }
+
+  &-i18n{
+    font-size: 15px;
+    margin-right: 150px;
+    text-align: center;
+  }
+
+  .activeColor{
+    color: @activeColor;
+  }
+}

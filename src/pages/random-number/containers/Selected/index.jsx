@@ -3,9 +3,6 @@ import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import {
-  Button
-} from 'antd-mobile';
 import Navigation from '../../components/Navigation';
 import { listIndexSet } from '../../common/publicFunc';
 
@@ -61,7 +58,7 @@ class Selected extends React.Component {
             listIndexSet(list).map(dataMapping)
           }
         </div>
-        <Button className="lottery-btn" onClick={this.backClick}>确定</Button>
+        <button type="button" className="lottery-btn" onClick={this.backClick}>确定</button>
       </div>
     );
   }
