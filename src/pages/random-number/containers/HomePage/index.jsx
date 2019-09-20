@@ -217,8 +217,8 @@ class HomePage extends React.Component {
               {t('inputError')}
             </div>
             <div className={`${classPrefix}-input`}>
-              <span className={`${classPrefix}-input-text`}>
-                {t('result')}
+              <span className={`${classPrefix}-input-text text-weight`}>
+                {`${t('result')} `}
               </span>
               <If condition={randomLoading}>
                 <Then>

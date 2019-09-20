@@ -9,10 +9,12 @@
   background: no-repeat center url(../../../../static/lottery-bg.jpg);
   display: flex;
 
+  @base: 50vw;
   &-content{
     margin-left: 15%;
     margin-top: 10vw;
     color: black;
+    width: @base; // 600px;
 
     .lottery-Building{
       font-size: 35px;
@@ -20,25 +22,30 @@
     }
 
     .lottery-lotSystem{
-      font-size: 50px;
+      font-size: @base * 0.083; // 50px;
       font-weight: 800;
-      line-height: 50px;
+      line-height: @base * 0.083; // 50px;
+      // width: 600px;
+    }
+
+    .lottery-lotSystem-en{
+      font-size:  @base * 0.066; // 40px;
     }
 
     .lottery-lotSystem-zh{
-      font-size: 20px;
+      font-size: @base * 0.033; // 20px;
     }
 
-    @lotBtnHeight: 35px;
+    @lotBtnHeight: @base * 0.058; // 35px;
     .lottery-lotBtn{
-        width: 120px;
+        width: @base * 0.2; // 120px;
         color: white;
         background-color: @bgColor;
         border-radius: 5px;
         text-align: center;
-        font-size: 18px;
+        font-size: @base * 0.03; // 18px;
         height: @lotBtnHeight;
-        line-height: @lotBtnHeight;
+        // line-height: @lotBtnHeight;
         margin-top: 16px;
         cursor: pointer;
         border: none;

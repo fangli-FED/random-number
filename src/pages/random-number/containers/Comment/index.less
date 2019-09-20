@@ -1,0 +1,54 @@
+@bgColor: rgb(198,209,228);
+@btnColor: rgb(38,113,210);
+
+.comment{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: no-repeat center url(../../../../static/comment-bg.png);
+  background-color: @bgColor;
+
+  @base: 40vw;
+  &-content{
+    display: flex;
+    flex-direction: column;
+    // justify-content: center;
+    align-items: center;
+    color: black;
+    width: @base;// 600px;
+
+    .comment-thanks{
+      font-size: @base * 0.05; // 30px;
+      font-weight: bold;
+    }
+
+    .comment-note{
+      margin-top: 20px;
+      font-size: @base * 0.031; // 19px;
+      letter-spacing: 1px;
+      font-weight: 300;
+
+      &-special{
+        font-weight: bold;
+        color: black;
+      }
+    }
+
+    @lotBtnHeight: @base * 0.058; // 35px;
+    .comment-btn{
+      width: @base * 0.166; // 100px;
+      color: white;
+      background-color: @btnColor;
+      border-radius: 5px;
+      text-align: center;
+      font-size: @base * 0.03; // 18px;
+      height: @lotBtnHeight;
+      margin-top: 70px;
+      cursor: pointer;
+      border: none;
+    }
+  }
+}

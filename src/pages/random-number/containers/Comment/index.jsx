@@ -1,12 +1,16 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import './index.less';
 
+const classPrefix = 'comment';
 class Comment extends React.Component {
   static propTypes = {
     history: PropTypes.shape({
-      goBack: PropTypes.func,
-    }).isRequired
+      push: PropTypes.func,
+    }).isRequired,
+    t: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -14,19 +18,26 @@ class Comment extends React.Component {
     this.state = {};
   }
 
-  backClick = () => {
+  historyPush = () => {
     const { history } = this.props;
-    history.goBack();
+    history.push('/lottery/begin');
   }
 
   render() {
+    const { t } = this.props;
     return (
-      <div>
-        Comment
-        <button type="button" onClick={this.backClick}>back</button>
+      <div className={classPrefix}>
+        <div className={`${classPrefix}-content`}>
+          <div className={`${classPrefix}-thanks`}>{t('commentThanks')}</div>
+          <div className={`${classPrefix}-note`}>
+            <span className={`${classPrefix}-note-special`}>{t('specialNote')}</span>
+            {t('commentNote')}
+          </div>
+          <button type="button" onClick={this.historyPush} className={`${classPrefix}-btn`}>{t('beginLotBtn')}</button>
+        </div>
       </div>
     );
   }
 }
 
-export default withRouter(Comment);
+export default withRouter(withTranslation()(Comment));

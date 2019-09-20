@@ -15,68 +15,63 @@ const dataMapping = data => (
 
 class ScrollList extends React.Component {
   static defaultProps = {
-    scroll: false
+    scroll: false,
+    setIndex: true,
   }
 
   static propTypes = {
     list: PropTypes.arrayOf(PropTypes.shape({
       index: PropTypes.string,
       name: PropTypes.string,
-      number: PropTypes.number,
+      // number: PropTypes.number,
     })).isRequired,
-    scroll: PropTypes.bool
+    scroll: PropTypes.bool,
+    setIndex: PropTypes.bool,
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      listPaddingTop: 0,
-      newList: listIndexSet(props.list)
+      newList: props.setIndex ? listIndexSet(props.list) : props.list,
     };
     this.scrollList = React.createRef();
   }
 
   componentDidMount() {
+  }
+
+  componentDidUpdate() {
     const { scroll } = this.props;
-    console.log('scrollList', this.scrollList);
     if (scroll) {
-      // this.scrollList.current.style.height = this.scrollList.current.offsetHeight;
       this.scrollDown();
-      // setInterval(this.scrollDown, 1000);
+    } else if (this.interval) {
+      clearInterval(this.interval);
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.interval) {
+      clearInterval(this.interval);
     }
   }
 
   scrollDown = () => {
-    // const { current: e } = this.scrollList;
     const { newList } = this.state;
-    // this.setState({ listPaddingTop: '50px' });
-    setInterval(() => {
-      // e.firstChild.classList.remove('scroll-margin-top');
+    this.interval = setInterval(() => {
       newList.unshift(newList[newList.length - 1]);
       newList.pop();
       this.setState({
-        // listPaddingTop: '0',
         newList
       });
     }, 100);
   }
 
   render() {
-    const { scroll } = this.props;
-    const { listPaddingTop, newList } = this.state;
-    const style = {};
-    if (scroll) {
-      style.paddingTop = listPaddingTop;
-      // if (this.scrollList) { style.height = this.scrollList.currentoffsetHeight; }
-    }
+    const { newList } = this.state;
     return (
-      <div
-        style={{ paddingTop: listPaddingTop }}
-        className={`${classPrefix} ${scroll ? 'overflow-hidden' : ''} animate`}
-        ref={this.scrollList}
-      >
+      <>
         {newList.map(dataMapping)}
-      </div>
+      </>
     );
   }
 }

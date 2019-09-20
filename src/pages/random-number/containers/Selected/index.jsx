@@ -3,35 +3,25 @@ import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import Navigation from '../../components/Navigation';
-import { listIndexSet } from '../../common/publicFunc';
+import { withTranslation } from 'react-i18next';
+import { Button } from 'antd';
+import ListTitle from '../../components/ListTitle';
+import ScrollList from '../../components/ScrollList';
 
-const param = ['index', 'name', 'number'];
+const classPrefix = 'begin';
 
-const dataMapping = data => (
-  <div className="lottery-line" key={`${data.index}-lottery-line`}>
-    {param.map((res, index) => (
-      <div className={`lottery-line-${res}`} key={`lottery-line-${res + index}`}>{data[res]}</div>
-    ))}
-  </div>
-);
-
-const paramName = ['序号', '名字', '号码'];
-
-const nameMapping = (data, index) => (
-  <div className={`lottery-line-${param[index]}`} key={data}>{data}</div>
-);
 
 class Selected extends React.Component {
   static propTypes = {
     history: PropTypes.shape({
-      goBack: PropTypes.func,
+      push: PropTypes.func,
     }).isRequired,
     list: PropTypes.arrayOf(PropTypes.shape({
       index: PropTypes.string,
       name: PropTypes.string,
       number: PropTypes.string,
     })).isRequired,
+    t: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -40,25 +30,41 @@ class Selected extends React.Component {
     };
   }
 
-  backClick = () => {
+  confirm = () => {
     const { history } = this.props;
-    history.goBack();
+    history.push('/lottery/begin');
   }
 
   render() {
-    const { list } = this.props;
+    const { list, t } = this.props;
+    console.log('随机摇号结果', list);
     return (
-      <div className="lottery">
-        <Navigation className="lottery-title" title="摇号结果" />
-        <div className="lottery-content">
-          <div className="lottery-line">
-            {paramName.map(nameMapping)}
+      <div className={classPrefix}>
+        <div className={`${classPrefix}-content`}>
+          <div className={`${classPrefix}-title`}>
+            {`${t('Building')}-${t('selectedResult')}`}
           </div>
-          {
-            listIndexSet(list).map(dataMapping)
-          }
+          <div className={`${classPrefix}-hr`} />
+          <div className={`${classPrefix}-list`}>
+            <div className={`${classPrefix}-list-title`}>
+              <div className={`${classPrefix}-list-left`}>
+                <ListTitle key="leftTitle" />
+              </div>
+            </div>
+            <div className={`${classPrefix}-list-content`}>
+              <div className={`${classPrefix}-list-left`}>
+                <ScrollList key="left" list={list} />
+              </div>
+            </div>
+          </div>
+          <Button
+            type="primary"
+            onClick={this.confirm}
+            className={`${classPrefix}-btn`}
+          >
+            {t('confirm')}
+          </Button>
         </div>
-        <button type="button" className="lottery-btn" onClick={this.backClick}>确定</button>
       </div>
     );
   }
@@ -74,6 +80,7 @@ const wrapper = compose(
     mapStateToProps,
   ),
   withRouter,
+  withTranslation(),
 );
 
 export default wrapper(Selected);

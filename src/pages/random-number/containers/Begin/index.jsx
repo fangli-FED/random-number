@@ -4,25 +4,24 @@ import PropTypes from 'prop-types';
 import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
-// import {
-//   Button, ActivityIndicator, Toast
-// } from 'antd-mobile';
+import {
+  Button, message
+} from 'antd';
 import AElf from 'aelf-sdk';
 import { localHttp, mnemonic, helloWorldContractName } from '../../../../common/constants';
 import { sleep, listIndexSet } from '../../common/publicFunc';
 import personnelData from '../../common/personnelData.json';
 import { storeRandomList } from '../../actions/randomListInfo';
-// import ScrollList from '../../components/ScrollList';
+import ListTitle from '../../components/ListTitle';
+import ScrollList from '../../components/ScrollList';
 import './index.less';
 
-const showData = listIndexSet(personnelData);
+const setPersonnelData = listIndexSet(personnelData);
+const dataLength = setPersonnelData.length;
+const leftData = setPersonnelData.slice(0, dataLength / 2);
+const rightData = setPersonnelData.slice(dataLength / 2, dataLength);
 
-// const param = ['index', 'name', 'number'];
-
-// 遍历列表头
-// const nameMapping = (data, index) => (
-//   <div className={`lottery-line-${param[index]}`} key={data}>{data}</div>
-// );
+const classPrefix = 'begin';
 
 class Begin extends React.Component {
   static defaultProps = {
@@ -34,7 +33,7 @@ class Begin extends React.Component {
       push: PropTypes.func,
     }).isRequired,
     storeRandomList: PropTypes.func,
-    // t: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -66,6 +65,12 @@ class Begin extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.setState({
+      animating: false
+    });
+  }
+
   getList = async (requestRetValue, frequency, sign) => {
     let getListReadableData = null;
     await sleep(4000);
@@ -92,7 +97,7 @@ class Begin extends React.Component {
         this.setState({
           animating: false
         });
-        history.push('/selected');
+        history.push('/lottery/selected');
       }
     } catch (err) {
       console.log(err, frequency);
@@ -105,7 +110,7 @@ class Begin extends React.Component {
         this.setState({
           animating: false
         });
-        // Toast.info('请重试');
+        message.error('请重试');
       } else {
         // 重新获取一次
         this.lotteryClick(true);
@@ -124,7 +129,7 @@ class Begin extends React.Component {
 
     try {
       const requestListTId = await this.helloWorldContract.RequestRandomList({
-        List: showData,
+        List: personnelData,
         Number: 5
       });
 
@@ -145,24 +150,41 @@ class Begin extends React.Component {
 
   render() {
     const { animating } = this.state;
-    console.log(animating);
-    // const { t } = this.props;
-    // const paramName = [t('index'), t('name'), t('number')];
+    const { t } = this.props;
     return (
-      <div className="lottery">
-        {/* <div className="lottery-content">
-          <div className="lottery-line">
-            {paramName.map(nameMapping)}
+      <div className={classPrefix}>
+        <div className={`${classPrefix}-content`}>
+          <div className={`${classPrefix}-title`}>
+            {`${t('Building')}-${t('beginLot')}`}
           </div>
-          <ScrollList list={personnelData} />
+          <div className={`${classPrefix}-hr`} />
+          <div className={`${classPrefix}-list`}>
+            <div className={`${classPrefix}-list-title`}>
+              <div className={`${classPrefix}-list-left`}>
+                <ListTitle key="leftTitle" />
+              </div>
+              <div className={`${classPrefix}-list-right`}>
+                <ListTitle key="rightTitle" />
+              </div>
+            </div>
+            <div className={`${classPrefix}-list-content`}>
+              <div className={`${classPrefix}-list-left`}>
+                <ScrollList key="left" scroll={animating} list={leftData} />
+              </div>
+              <div className={`${classPrefix}-list-right`}>
+                <ScrollList key="right" scroll={animating} list={rightData} setIndex={false} />
+              </div>
+            </div>
+          </div>
+          <Button
+            type="primary"
+            onClick={this.lotteryClick}
+            className={`${classPrefix}-btn`}
+            disabled={animating}
+          >
+            {t('beginLotBtn')}
+          </Button>
         </div>
-        <Button className="lottery-btn" onClick={this.lotteryClick} disabled={animating}>点击摇号</Button>
-
-        <ActivityIndicator
-          toast
-          text="Loading..."
-          animating={animating}
-        /> */}
       </div>
     );
   }

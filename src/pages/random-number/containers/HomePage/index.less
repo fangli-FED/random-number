@@ -18,38 +18,38 @@
     justify-content: space-between;
     align-items: center;
 
-
+    @base: 40vw;
     .home-leftContent{
       align-self:flex-start;
 
       color: black;
-      width: 490px;
+      width: @base; //500px;
       margin-top: 10vw;
 
       .home-text-aelf{
-        font-size: 35px;
-        line-height: 50px;
+        font-size: @base * 0.07; //35px;
+        line-height: 4vw; //50px;
       }
 
       .home-text-generation{
-        font-size: 50px;
+        font-size: @base * 0.1; //50px;
         font-weight: 800;
-        line-height: 50px;
+        line-height: @base * 0.1; //50px;
       }
 
       .home-text-generation-zh{
-        font-size: 20px;
+        font-size: @base * 0.04; // 20px;
       }
 
-      @learnMoreHeight: 30px;
+      @learnMoreHeight: @base * 0.06; // 30px;
       .home-learnMore{
         display: block;
-        width: 100px;
+        width: @base * 0.2; //100px;
         color: white;
         background-color: @bgColor;
         border-radius: 5px;
         text-align: center;
-        font-size: 18px;
+        font-size: @base * 0.036; //18px;
         height: @learnMoreHeight;
         line-height: @learnMoreHeight;
         margin-top: 16px;
@@ -82,10 +82,16 @@
         align-items: center;
         margin-top: @contentMarginTop;
 
+        .text-weight{
+          font-weight: bolder;
+        }
+
         &-text{
-          width: 60px;
-          margin-right: 15px;
-          text-align: right;
+          width: 70px;
+          font-size: 20px;
+          // margin-right: 15px;
+          text-align: left;
+          font-weight: 400;
         }
 
         &-frame{
@@ -99,7 +105,7 @@
       }
 
       .home-generate{
-        width: 250px;
+        width: 270px;
         height: 32px;
         font-size: 18px;
         margin-top: @contentMarginTop;
