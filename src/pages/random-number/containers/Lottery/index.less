@@ -38,6 +38,7 @@
 
     @lotBtnHeight: @base * 0.058; // 35px;
     .lottery-lotBtn{
+        min-width: 120px;
         width: @base * 0.2; // 120px;
         color: white;
         background-color: @bgColor;
@@ -52,54 +53,4 @@
     }
 
   }
-
-  /*
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  //justify-content: space-between;
-
-  &-title{
-    text-align: center;
-    font-size: 7vw;
-    width: 100%;
-
-  }
-
-  &-content{
-    flex: 1;
-    width: 90vw;
-    font-size: 4vw;
-    margin: @lotteryMargin 0;
-
-    display: flex;
-    flex-direction: column;
-
-    .lottery-line{
-      width: 100%;
-      margin-bottom: 16px;
-      height: 50px;
-
-      &-index, &-name, &-number{
-        display: inline-block;
-        width: 33.333%;
-        text-align: center;
-      }
-    }
-  }
-
-  &-btn{
-    width: 70vw;
-    height: 12vw;
-    font-size: 4.6vw;
-    line-height: 12vw;
-    margin-bottom: @lotteryMargin;
-    box-sizing: border-box;
-  }
-
-  &-modal{
-    width: 70vw;
-  }
-
-  */
 }

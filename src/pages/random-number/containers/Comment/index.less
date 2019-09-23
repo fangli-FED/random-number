@@ -12,6 +12,7 @@
   background-color: @bgColor;
 
   @base: 40vw;
+  // 根据屏幕大小调整字体长度, 以content的width为基础进行调整。
   &-content{
     display: flex;
     flex-direction: column;
@@ -39,7 +40,8 @@
 
     @lotBtnHeight: @base * 0.058; // 35px;
     .comment-btn{
-      width: @base * 0.166; // 100px;
+      min-width: 120px;
+      width: @base * 0.18;
       color: white;
       background-color: @btnColor;
       border-radius: 5px;

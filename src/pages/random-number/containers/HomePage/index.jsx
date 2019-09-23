@@ -38,10 +38,10 @@ class HomePage extends React.Component {
     };
     this.aelf = null;
     this.consensusContract = null;
-    this.tokenHash = null;
   }
 
   componentDidMount() {
+    // 组件加载完成，开始获取实例
     const aelf = new AElf(new AElf.providers.HttpProvider(localHttp));
     if (!aelf.isConnected()) {
       console.error('Blockchain is not running');
@@ -127,6 +127,7 @@ class HomePage extends React.Component {
     });
 
     if (this.consensusContract === null) {
+      // 如果componentDidMount里面还未获取到contract 实利，等待2s 才能进行合约的获取，可根据链的实际情况做修改.
       await sleep(2000);
     }
 
@@ -171,6 +172,7 @@ class HomePage extends React.Component {
                 <div className={`${classPrefix}-text-generation-zh`}>The Generation Plan of Random Number</div>
               </Then>
             </If>
+            {/* 根据产品的要求，预留一个链接 */}
             <a className={`${classPrefix}-learnMore`} href="https://github.com/aelfProject">{t('learnMore')}</a>
           </div>
           <div className={`${classPrefix}-rightContent`}>
@@ -186,7 +188,6 @@ class HomePage extends React.Component {
                 value={minNumber}
                 placeholder={t('minPlaceholder')}
                 disabled={randomLoading}
-                // defaultValue={t('minPlaceholder')}
               />
             </div>
             <div className={`${classPrefix}-input`}>
@@ -200,7 +201,6 @@ class HomePage extends React.Component {
                 value={maxNumber}
                 placeholder={t('maxPlaceholder')}
                 disabled={randomLoading}
-                // defaultValue={t('minPlaceholder')}
               />
             </div>
             <Button

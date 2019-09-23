@@ -13,9 +13,12 @@ const dataMapping = data => (
   </div>
 );
 
+
 class ScrollList extends React.Component {
   static defaultProps = {
+    // 数据滚动
     scroll: false,
+    // 传入的数据需要添加编号。false时传入编完号的数据，或不需要编号的数据
     setIndex: true,
   }
 
@@ -38,21 +41,26 @@ class ScrollList extends React.Component {
   }
 
   componentDidMount() {
+    const { scroll } = this.props;
+    if (scroll) {
+      this.scrollDown();
+    }
   }
 
-  componentDidUpdate() {
-    const { scroll } = this.props;
+  componentWillReceiveProps(newProps) {
+    const { scroll, list } = newProps;
     if (scroll) {
       this.scrollDown();
     } else if (this.interval) {
       clearInterval(this.interval);
+      this.setState({
+        newList: listIndexSet(list)
+      });
     }
   }
 
   componentWillUnmount() {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
+    clearInterval(this.interval);
   }
 
   scrollDown = () => {

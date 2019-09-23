@@ -73,11 +73,12 @@ class Begin extends React.Component {
 
   getList = async (requestRetValue, frequency, sign) => {
     let getListReadableData = null;
+    // request和get randomlist 中间需要一定时间间隔, 根据c#开发人员推荐为4s,之后可以根据实际情况进行调整。
     await sleep(4000);
     try {
       const getRandomTId = await this.helloWorldContract.GetRandomList(requestRetValue.tokenHash);
 
-      // 获取getrandomlist的返回数据，失败抛出错误
+      // 获取getrandomlist的返回数据，必须等待一定时间，失败抛出错误
       await sleep(1000);
       let getRandomData = this.aelf.chain.getTxResult(getRandomTId.TransactionId);
       if (getRandomData.Status !== 'MINED') {
@@ -88,15 +89,16 @@ class Begin extends React.Component {
         }
       }
 
-      console.log('getRandomData', getRandomData);
+      // console.log('getRandomData', getRandomData);
       if (getRandomData.Status === 'MINED') {
         // 成功获取，返回数据
-        getListReadableData = JSON.parse(getRandomData.ReadableReturnValue).List;
-        const { storeRandomList: storeList, history } = this.props;
-        storeList(getListReadableData);
         this.setState({
           animating: false
         });
+        getListReadableData = JSON.parse(getRandomData.ReadableReturnValue).List;
+        const { storeRandomList: storeList, history } = this.props;
+        // 存储数据到redux，selected页面通过redux获取，选中数据。
+        storeList(getListReadableData);
         history.push('/lottery/selected');
       }
     } catch (err) {
@@ -112,7 +114,7 @@ class Begin extends React.Component {
         });
         message.error('请重试');
       } else {
-        // 重新获取一次
+        // 重新获取并只重新获取一次,第二次直接报错
         this.lotteryClick(true);
       }
     }
@@ -124,15 +126,18 @@ class Begin extends React.Component {
     });
 
     if (this.helloWorldContract === null) {
+      // 如果componentDidMount里面还未获取到contract 实利，等待2s 才能进行合约的获取，可根据链的实际情况做修改.
       await sleep(2000);
     }
 
     try {
+      // 发送获取随机数的请求
       const requestListTId = await this.helloWorldContract.RequestRandomList({
         List: personnelData,
         Number: 5
       });
 
+      // 等一段时间后可以拿到,4s可以拿到，但有些时候时间短一些，第一次未获取到再获取一次。
       await sleep(1000);
       let requestReturnData = await this.aelf.chain.getTxResult(requestListTId.TransactionId);
       if (requestReturnData.Status !== 'MINED') {

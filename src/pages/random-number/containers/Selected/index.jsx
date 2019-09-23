@@ -37,7 +37,6 @@ class Selected extends React.Component {
 
   render() {
     const { list, t } = this.props;
-    console.log('随机摇号结果', list);
     return (
       <div className={classPrefix}>
         <div className={`${classPrefix}-content`}>
