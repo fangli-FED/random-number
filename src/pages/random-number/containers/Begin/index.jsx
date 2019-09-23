@@ -8,7 +8,7 @@ import {
   Button, message
 } from 'antd';
 import AElf from 'aelf-sdk';
-import { localHttp, mnemonic, helloWorldContractName } from '../../../../common/constants';
+import { localHttp, mnemonic, randomDemoContractName } from '../../../../common/constants';
 import { sleep, listIndexSet } from '../../common/publicFunc';
 import personnelData from '../../common/personnelData.json';
 import { storeRandomList } from '../../actions/randomListInfo';
@@ -54,7 +54,7 @@ class Begin extends React.Component {
       const wallet = AElf.wallet.getWalletByMnemonic(mnemonic);
       aelf.chain.getChainStatus()
         .then(res => aelf.chain.contractAt(res.GenesisContractAddress, wallet))
-        .then(zeroC => zeroC.GetContractAddressByName.call(sha256(helloWorldContractName)))
+        .then(zeroC => zeroC.GetContractAddressByName.call(sha256(randomDemoContractName)))
         .then(helloWorldAddress => aelf.chain.contractAt(helloWorldAddress, wallet))
         .then(helloWorldContract => {
           this.helloWorldContract = helloWorldContract;
