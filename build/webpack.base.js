@@ -6,6 +6,7 @@
 /* eslint-env node */
 
 const path = require('path');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
@@ -67,6 +68,13 @@ const baseConfig = {
             limit: 8192
           }
         }]
+      },
+      {
+        loader:'webpack-ant-icon-loader',
+        enforce: 'pre',
+        include:[
+          require.resolve('@ant-design/icons/lib/dist')
+        ]
       }
     ]
   },
@@ -88,6 +96,9 @@ const baseConfig = {
     }),
     new webpack.ProvidePlugin({
       React: 'react'
+    }),
+    new MomentLocalesPlugin({
+      localesToKeep: ['es-us', 'zh-cn'],
     }),
     new CopyWebpackPlugin(copies),
     new webpack.DefinePlugin({

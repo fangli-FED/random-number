@@ -10,7 +10,7 @@ export const resources = {
       lottery: 'lottery',
       weChatSweep: 'WeChat sweep',
       follow: 'Follow the aelf Offical Accounts',
-      index: 'index',
+      order: 'order',
       name: 'name',
       number: 'number',
       introduce:
@@ -39,7 +39,7 @@ export const resources = {
         + ' fairness! Shake the whole live broadcast to ensure that the sale of commercial housing is open and fair.',
       commentStart: 'Start Lot',
       beginLot: 'Household Selection Justice',
-      beginLotBtn: 'Click To Lot',
+      beginLotBtn: 'Start',
       selectedResult: 'Lot Result',
       confirm: 'Confirm',
     }
@@ -50,7 +50,7 @@ export const resources = {
       lottery: '购房选房摇号',
       weChatSweep: '微信扫一扫',
       follow: '关注aelf社区公众号',
-      index: '序号',
+      order: '序号',
       name: '名字',
       number: '号码',
       introduce: 'aelf是一个真正达到商用标准, 采用了IT行业最前沿的设计和技术的高效区块链系统',

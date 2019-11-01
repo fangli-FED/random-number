@@ -1,24 +1,23 @@
+/**
+ * @file title
+ */
 import React from 'react';
-import { withTranslation } from 'react-i18next';
-import PropTypes from 'prop-types';
+import {
+  Row,
+  Col
+} from 'antd';
+import { useTranslation } from 'react-i18next';
 import './index.less';
-// const param = ['index', 'name', 'number'];
 
-const nameMapping = data => (
-  <div className="list-title" key={data}>{data}</div>
-);
-const ListTitle = props => {
-  const { t } = props;
-  const paramName = [t('index'), t('name'), t('number')];
+const ListTitle = () => {
+  const [t] = useTranslation();
   return (
-    <>
-      {paramName.map(nameMapping)}
-    </>
+    <Row>
+      <Col span={8} className="list-title">{t('order')}</Col>
+      <Col span={8} className="list-title">{t('name')}</Col>
+      <Col span={8} className="list-title">{t('number')}</Col>
+    </Row>
   );
 };
 
-ListTitle.propTypes = {
-  t: PropTypes.func.isRequired
-};
-
-export default withTranslation()(ListTitle);
+export default ListTitle;

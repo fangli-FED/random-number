@@ -9,7 +9,6 @@ import {
   Route,
 } from 'react-router-dom';
 import './index.less';
-// import AuthRoute from './components/Auth';
 import HomePage from './containers/HomePage';
 import Lottery from './containers/Lottery';
 import Comment from './containers/Comment';

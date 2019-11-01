@@ -4,11 +4,14 @@ import PropTypes from 'prop-types';
 import AElf from 'aelf-sdk';
 import { withTranslation } from 'react-i18next';
 import {
-  Input, Button, Spin, message
+  Input,
+  Button,
+  Spin,
+  message
 } from 'antd';
 import { If, Then, Else } from 'react-if';
-import { localHttp, mnemonic, consensusContractName } from '../../../../common/constants';
-import { sleep, stringToIntHash } from '../../common/publicFunc';
+import { END_POINT, mnemonic, consensusContractName } from '../../../../common/constants';
+import { sleep, stringToIntHash } from '../../common/utils';
 import bottomBg from '../../../../static/randomBottomBg.png';
 import './index.less';
 
@@ -42,25 +45,20 @@ class HomePage extends React.Component {
 
   componentDidMount() {
     // 组件加载完成，开始获取实例
-    const aelf = new AElf(new AElf.providers.HttpProvider(localHttp));
-    if (!aelf.isConnected()) {
-      console.error('Blockchain is not running');
-    } else {
-      this.aelf = aelf;
-
-      const { sha256 } = AElf.utils;
-      const wallet = AElf.wallet.getWalletByMnemonic(mnemonic);
-      aelf.chain.getChainStatus()
-        .then(res => aelf.chain.contractAt(res.GenesisContractAddress, wallet))
-        .then(zeroC => zeroC.GetContractAddressByName.call(sha256(consensusContractName)))
-        .then(consensusAddress => aelf.chain.contractAt(consensusAddress, wallet))
-        .then(consensusContract => {
-          this.consensusContract = consensusContract;
-        })
-        .catch(err => {
-          console.log('err', err);
-        });
-    }
+    const aelf = new AElf(new AElf.providers.HttpProvider(END_POINT));
+    this.aelf = aelf;
+    const { sha256 } = AElf.utils;
+    const wallet = AElf.wallet.getWalletByMnemonic(mnemonic);
+    aelf.chain.getChainStatus()
+      .then(res => aelf.chain.contractAt(res.GenesisContractAddress, wallet))
+      .then(zeroC => zeroC.GetContractAddressByName.call(sha256(consensusContractName)))
+      .then(consensusAddress => aelf.chain.contractAt(consensusAddress, wallet))
+      .then(consensusContract => {
+        this.consensusContract = consensusContract;
+      })
+      .catch(err => {
+        console.log('err', err);
+      });
   }
 
   getRandom = async (requestRandomTId, frequency, sign) => {
@@ -236,7 +234,6 @@ class HomePage extends React.Component {
                   />
                 </Else>
               </If>
-
             </div>
           </div>
         </div>

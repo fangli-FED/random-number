@@ -1,87 +1,93 @@
-import React from 'react';
+/**
+ * @file animated scroll list
+ * @author atom-yang
+ */
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { listIndexSet } from '../../common/publicFunc';
+import { useTranslation } from 'react-i18next';
+import { useInterval } from 'react-use';
+import {
+  Row,
+  Col
+} from 'antd';
+import {
+  randomSort
+} from '../../common/utils';
+import ListTitle from '../ListTitle';
 import './index.less';
 
-const classPrefix = 'scroll';
-const param = ['index', 'name', 'number'];
-const dataMapping = data => (
-  <div className={`${classPrefix}-line`} key={`${data.index}-scroll-line`}>
-    {param.map((res, index) => (
-      <div className={`${classPrefix}-line-${res}`} key={`scroll-line-${res + index}`}>{data[res]}</div>
-    ))}
-  </div>
-);
+export const ContentList = props => {
+  const { list = [] } = props;
+  const [, i18n] = useTranslation();
+  return (
+    <div className="content-list">
+      {list.map(v => (
+        <Row key={v.number} className="content-list-item">
+          <Col span={8} className="content-list-item-order">{v.order[i18n.language || 'zh']}</Col>
+          <Col span={8} className="content-list-item-name">{v.name}</Col>
+          <Col span={8} className="content-list-item-number">{v.number}</Col>
+        </Row>
+      ))}
+    </div>
+  );
+};
 
+ContentList.propTypes = {
+  list: PropTypes.arrayOf(PropTypes.shape({
+    order: PropTypes.object,
+    name: PropTypes.string,
+    number: PropTypes.number,
+  })).isRequired
+};
 
-class ScrollList extends React.Component {
-  static defaultProps = {
-    // 数据滚动
-    scroll: false,
-    // 传入的数据需要添加编号。false时传入编完号的数据，或不需要编号的数据
-    setIndex: true,
-  }
+const ScrollList = props => {
+  const {
+    list,
+    delay,
+    animated,
+    panelNumber
+  } = props;
+  const [
+    currentList,
+    setCurrentList
+  ] = useState([...list]);
 
-  static propTypes = {
-    list: PropTypes.arrayOf(PropTypes.shape({
-      index: PropTypes.string,
-      name: PropTypes.string,
-      // number: PropTypes.number,
-    })).isRequired,
-    scroll: PropTypes.bool,
-    setIndex: PropTypes.bool,
-  }
+  useInterval(() => {
+    setCurrentList(currentList.slice().sort(randomSort));
+  }, animated ? delay : null);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      newList: props.setIndex ? listIndexSet(props.list) : props.list,
-    };
-    this.scrollList = React.createRef();
-  }
+  return (
+    <div className="random-list">
+      <div className="random-list-title">
+        <ListTitle />
+        <ListTitle />
+      </div>
+      <div className="random-list-content">
+        <ContentList
+          list={currentList.slice(0, panelNumber)}
+        />
+        <ContentList
+          list={currentList.slice(panelNumber)}
+        />
+      </div>
+    </div>
+  );
+};
 
-  componentDidMount() {
-    const { scroll } = this.props;
-    if (scroll) {
-      this.scrollDown();
-    }
-  }
+ScrollList.propTypes = {
+  list: PropTypes.arrayOf(PropTypes.shape({
+    order: PropTypes.object,
+    name: PropTypes.string,
+    number: PropTypes.number,
+  })).isRequired,
+  animated: PropTypes.bool.isRequired,
+  delay: PropTypes.number, // ms
+  panelNumber: PropTypes.number
+};
 
-  componentWillReceiveProps(newProps) {
-    const { scroll, list } = newProps;
-    if (scroll) {
-      this.scrollDown();
-    } else if (this.interval) {
-      clearInterval(this.interval);
-      this.setState({
-        newList: listIndexSet(list)
-      });
-    }
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
-
-  scrollDown = () => {
-    const { newList } = this.state;
-    this.interval = setInterval(() => {
-      newList.unshift(newList[newList.length - 1]);
-      newList.pop();
-      this.setState({
-        newList
-      });
-    }, 100);
-  }
-
-  render() {
-    const { newList } = this.state;
-    return (
-      <>
-        {newList.map(dataMapping)}
-      </>
-    );
-  }
-}
+ScrollList.defaultProps = {
+  delay: 100,
+  panelNumber: 50
+};
 
 export default ScrollList;

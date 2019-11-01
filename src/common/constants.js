@@ -8,7 +8,7 @@ export const API_PATH = {
   TEST: '/api/test'
 };
 
-export const localHttp = 'http://192.168.199.137:1235';
+export const END_POINT = 'http://192.168.199.137:1235';
 
 export const mnemonic = 'easy rare primary neck rotate pond giggle coil song sting small palace';
 

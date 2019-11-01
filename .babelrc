@@ -22,9 +22,19 @@
       "import",
       {
         "libraryName": "antd",
-        "libraryDirectory": "es",
+        "libraryDirectory": "lib",
         "style": true
-      }
+      },
+      "ant"
+    ],
+    [
+      "import",
+      {
+        "libraryName": "react-use",
+        "libraryDirectory": "lib",
+        "camel2DashComponentName": false
+      },
+      "react-use"
     ],
     [
       "@babel/plugin-proposal-decorators",

@@ -2,9 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Popover } from 'antd';
-import '../../common/icons';
+import {
+  Popover,
+  Icon
+} from 'antd';
+import {
+  redditIcon
+} from '../../common/icons';
 import './index.less';
 import aelfPublicNumber from '../../../../static/aelf-public-number.jpg';
 import footerLogo from '../../../../static/footer-logo.png';
@@ -15,74 +19,64 @@ const icons = [
   {
     id: 1,
     name: 'twitter',
-    icon: ['fab', 'twitter'],
+    icon: 'twitter',
     link: 'https://twitter.com/aelfblockchain'
   },
   {
     id: 2,
     name: 'facebook',
-    icon: ['fab', 'facebook'],
+    icon: 'facebook',
     link: 'https://www.facebook.com/aelfofficial/'
   },
   {
     id: 3,
     name: 'github',
-    icon: ['fab', 'github'],
-    link: 'https://github.com/aelfProject'
+    icon: 'github',
+    link: 'https://github.com/AElfProject'
   },
   {
     id: 4,
     name: 'reddit',
-    icon: ['fab', 'reddit'],
+    icon: redditIcon,
     link: 'https://www.reddit.com/r/aelfofficial/'
   },
   {
     id: 5,
     name: 'youtube',
-    icon: ['fab', 'youtube'],
+    icon: 'youtube',
     link: 'https://www.youtube.com/c/aelfblockchain'
   },
   {
     id: 6,
-    name: 'weixin',
-    icon: ['fab', 'weixin'],
+    name: 'wechat',
+    icon: 'wechat',
     link: '#'
   },
 ];
 
 const iconMap = data => {
-  const { id, icon, link } = data;
-  if (data.name === 'weixin') {
+  const { id, icon: IconName, link } = data;
+  if (data.name === 'wechat') {
     return (
       <Popover
         key={id}
-        className={`${classPrefix}-icona`}
+        className={`${classPrefix}-icon`}
         placement="top"
         trigger="click"
         content={(<img alt="qr code" className={`${classPrefix}-publicNumber`} src={aelfPublicNumber} />)}
       >
-        <FontAwesomeIcon
-          icon={icon}
-          className={`${classPrefix}-icon`}
-        />
+        <Icon type={IconName} />
       </Popover>
     );
   }
   return (
-    <a href={link} key={id} className={`${classPrefix}-icona`}>
-      <FontAwesomeIcon
-        icon={icon}
-        className={`${classPrefix}-icon`}
-      />
+    <a href={link} key={id} className={`${classPrefix}-icon`}>
+      {typeof IconName === 'string' ? <Icon type={IconName} /> : <IconName />}
     </a>
   );
 };
 
 class Footer extends React.Component {
-  static defaultProps = {
-    // className: null
-  }
-
   static propTypes = {
     t: PropTypes.func.isRequired,
     history: PropTypes.shape({
@@ -90,7 +84,7 @@ class Footer extends React.Component {
         pathname: PropTypes.string
       })
     }).isRequired,
-  }
+  };
 
   constructor(props) {
     super(props);

@@ -5,36 +5,40 @@ import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 import {
-  Button, message
+  Button,
+  message,
+  Divider
 } from 'antd';
 import AElf from 'aelf-sdk';
-import { localHttp, mnemonic, randomDemoContractName } from '../../../../common/constants';
-import { sleep, listIndexSet } from '../../common/publicFunc';
+import { END_POINT, mnemonic, randomDemoContractName } from '../../../../common/constants';
+import { sleep } from '../../common/utils';
 import personnelData from '../../common/personnelData.json';
 import { storeRandomList } from '../../actions/randomListInfo';
-import ListTitle from '../../components/ListTitle';
 import ScrollList from '../../components/ScrollList';
 import './index.less';
 
-const setPersonnelData = listIndexSet(personnelData);
-const dataLength = setPersonnelData.length;
-const leftData = setPersonnelData.slice(0, dataLength / 2);
-const rightData = setPersonnelData.slice(dataLength / 2, dataLength);
+const setPersonnelData = personnelData.map((v, i) => ({
+  ...v,
+  order: {
+    en: `NO.${i + 1}`,
+    zh: `第${i + 1}位`
+  }
+}));
 
 const classPrefix = 'begin';
 
 class Begin extends React.Component {
-  static defaultProps = {
-    storeRandomList: () => {}
-  }
-
   static propTypes = {
     history: PropTypes.shape({
       push: PropTypes.func,
     }).isRequired,
     storeRandomList: PropTypes.func,
     t: PropTypes.func.isRequired,
-  }
+  };
+
+  static defaultProps = {
+    storeRandomList: () => {}
+  };
 
   constructor(props) {
     super(props);
@@ -45,24 +49,20 @@ class Begin extends React.Component {
   }
 
   componentDidMount() {
-    const aelf = new AElf(new AElf.providers.HttpProvider(localHttp));
-    if (!aelf.isConnected()) {
-      console.error('Blockchain is not running');
-    } else {
-      this.aelf = aelf;
-      const { sha256 } = AElf.utils;
-      const wallet = AElf.wallet.getWalletByMnemonic(mnemonic);
-      aelf.chain.getChainStatus()
-        .then(res => aelf.chain.contractAt(res.GenesisContractAddress, wallet))
-        .then(zeroC => zeroC.GetContractAddressByName.call(sha256(randomDemoContractName)))
-        .then(helloWorldAddress => aelf.chain.contractAt(helloWorldAddress, wallet))
-        .then(helloWorldContract => {
-          this.helloWorldContract = helloWorldContract;
-        })
-        .catch(err => {
-          console.log('err', err);
-        });
-    }
+    const aelf = new AElf(new AElf.providers.HttpProvider(END_POINT));
+    this.aelf = aelf;
+    const { sha256 } = AElf.utils;
+    const wallet = AElf.wallet.getWalletByMnemonic(mnemonic);
+    aelf.chain.getChainStatus()
+      .then(res => aelf.chain.contractAt(res.GenesisContractAddress, wallet))
+      .then(zeroC => zeroC.GetContractAddressByName.call(sha256(randomDemoContractName)))
+      .then(helloWorldAddress => aelf.chain.contractAt(helloWorldAddress, wallet))
+      .then(helloWorldContract => {
+        this.helloWorldContract = helloWorldContract;
+      })
+      .catch(err => {
+        console.log('err', err);
+      });
   }
 
   componentWillUnmount() {
@@ -118,7 +118,7 @@ class Begin extends React.Component {
         this.lotteryClick(true);
       }
     }
-  }
+  };
 
   lotteryClick = async sign => {
     this.setState({
@@ -151,7 +151,7 @@ class Begin extends React.Component {
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   render() {
     const { animating } = this.state;
@@ -162,25 +162,8 @@ class Begin extends React.Component {
           <div className={`${classPrefix}-title`}>
             {`${t('Building')}-${t('beginLot')}`}
           </div>
-          <div className={`${classPrefix}-hr`} />
-          <div className={`${classPrefix}-list`}>
-            <div className={`${classPrefix}-list-title`}>
-              <div className={`${classPrefix}-list-left`}>
-                <ListTitle key="leftTitle" />
-              </div>
-              <div className={`${classPrefix}-list-right`}>
-                <ListTitle key="rightTitle" />
-              </div>
-            </div>
-            <div className={`${classPrefix}-list-content`}>
-              <div className={`${classPrefix}-list-left`}>
-                <ScrollList key="left" scroll={animating} list={leftData} />
-              </div>
-              <div className={`${classPrefix}-list-right`}>
-                <ScrollList key="right" scroll={animating} list={rightData} setIndex={false} />
-              </div>
-            </div>
-          </div>
+          <Divider />
+          <ScrollList list={setPersonnelData} animated={animating} />
           <Button
             type="primary"
             onClick={this.lotteryClick}

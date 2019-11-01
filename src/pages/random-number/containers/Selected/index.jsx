@@ -4,9 +4,12 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
-import { Button } from 'antd';
+import {
+  Button,
+  Divider
+} from 'antd';
 import ListTitle from '../../components/ListTitle';
-import ScrollList from '../../components/ScrollList';
+import { ContentList } from '../../components/ScrollList';
 
 const classPrefix = 'begin';
 
@@ -43,18 +46,10 @@ class Selected extends React.Component {
           <div className={`${classPrefix}-title`}>
             {`${t('Building')}-${t('selectedResult')}`}
           </div>
-          <div className={`${classPrefix}-hr`} />
+          <Divider />
           <div className={`${classPrefix}-list`}>
-            <div className={`${classPrefix}-list-title`}>
-              <div className={`${classPrefix}-list-left`}>
-                <ListTitle key="leftTitle" />
-              </div>
-            </div>
-            <div className={`${classPrefix}-list-content`}>
-              <div className={`${classPrefix}-list-left`}>
-                <ScrollList key="left" list={list} />
-              </div>
-            </div>
+            <ListTitle />
+            <ContentList list={list} />
           </div>
           <Button
             type="primary"
