@@ -48,7 +48,7 @@ export const resources = {
       confirm: 'Confirm',
     }
   },
-  zh: {
+  'zh-CN': {
     translation: {
       randomNumber: '随机数',
       lottery: '购房选房摇号',

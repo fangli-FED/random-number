@@ -56,7 +56,7 @@ class Navigation extends React.Component {
 
   windwoChange = () => {
     this.setState({
-      isPhone: window.screen.width <= 768
+      isPhone: document.body.clientWidth <= 768
     });
   }
 
@@ -66,6 +66,12 @@ class Navigation extends React.Component {
    * @param {*} isNav Distinguish whether the event is triggered by the navigation bar
    */
   handleDrop = (e, isNav) => {
+    const { isPhone } = this.state;
+
+    if (!isPhone) {
+      return;
+    }
+
     const dropDom = document.querySelector('.drop-down');
     const { isDrop } = this.state;
 
@@ -129,7 +135,7 @@ class Navigation extends React.Component {
           <button
             type="button"
             className={`${rightLanguage === 'en' ? '' : 'activeColor'} button-style-clear`}
-            onClick={() => { this.changeLanguage('zh'); }}
+            onClick={() => { this.changeLanguage('zh-CN'); }}
           >
             中
           </button>

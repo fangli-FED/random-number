@@ -26,7 +26,7 @@ const setPersonnelData = personnelData.map((v, i) => ({
   ...v,
   order: {
     en: `NO.${i + 1}`,
-    zh: `第${i + 1}位`
+    'zh-CN': `第${i + 1}位`
   }
 }));
 

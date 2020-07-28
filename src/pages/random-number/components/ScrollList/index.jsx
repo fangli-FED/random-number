@@ -24,6 +24,8 @@ import './index.less';
 export const ContentList = props => {
   const { list = [] } = props;
   const [, i18n] = useTranslation();
+  console.log(i18n);
+  console.log(list);
   return (
     <div className="content-list">
       {list.map(v => (
@@ -61,7 +63,7 @@ const ScrollList = props => {
     setIsPhone
   ] = useState(false);
   const setIsPhoneValue = () => {
-    setIsPhone(window.screen.width <= 768);
+    setIsPhone(document.body.clientWidth <= 768);
   };
 
   const throwttleIsPhone = throwttle(setIsPhoneValue, 400);
