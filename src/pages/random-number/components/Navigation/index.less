@@ -33,7 +33,6 @@
   &-logo{
     margin: 0 50px;
     width: 180px;
-    height: 30px;
   }
 
   &-randomNumber, &-lottery{
@@ -55,5 +54,61 @@
 
   .activeColor{
     color: @activeColor;
+  }
+}
+
+@media(max-width: 768px) {
+  .navigation {
+    background-color: #2671d2;
+    height: 50px;
+    color: #ffffff;
+    &-logo {
+      width: 56px;
+      margin: 0 6.7vw; 
+    }
+
+    &-i18n, &-randomNumber, &-lottery {
+      margin: 0;
+    }
+
+    .phone-menu {
+      display: inline-block;
+      position: relative;
+      margin: 0 6.7vw;
+
+      .drop-down {
+        color: #000000;
+        min-width: 150px;
+        position: absolute;
+        right: -0.3vw;
+        top: 0;
+        z-index: 999;
+        background-color: #ffffff;
+        box-shadow: 0 4px 10px #e2e2e2;
+        // transition: all 0.5s;
+        top: -200px;
+        // display: none;
+        button {
+          width: 100%;
+          height: 41px;
+          padding: 5px;
+          // line-height: 31px;
+          border-bottom: 1px solid #ebebeb;
+        }
+      }
+    }
+
+    .button-style-clear{
+      &:hover {
+        color: #000000;
+      }
+    }
+
+    .activeColor {
+      color: #000000;
+    }
+    .routerActive{
+      box-shadow: none;
+    }
   }
 }

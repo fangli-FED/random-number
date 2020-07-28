@@ -77,3 +77,32 @@
 .ant-popover-inner-content{
   padding: 0;
 }
+
+@media(min-width: 768px) and (max-width: 1024px) {
+  .footer {
+    justify-content: center;
+    flex-direction: column;
+
+    &-aelfImg {
+      display: none;
+    }
+  }
+}
+
+@media(max-width: 768px) {
+  .footer {
+    justify-content: center;
+    &-leftContent {
+      display: none;
+    }
+
+    &-contact {
+      display: none;
+    }
+
+
+    &-rightContent {
+      justify-content: center;
+    }
+  }
+}

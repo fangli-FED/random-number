@@ -11,7 +11,7 @@
   background: no-repeat center url(../../../../static/comment-bg.png);
   background-color: @bgColor;
 
-  @base: 40vw;
+  @base: 50vw;
   // 根据屏幕大小调整字体长度, 以content的width为基础进行调整。
   &-content{
     display: flex;
@@ -46,11 +46,47 @@
       background-color: @btnColor;
       border-radius: 5px;
       text-align: center;
-      font-size: @base * 0.03; // 18px;
-      height: @lotBtnHeight;
+      height: 32px;
+      font-size: 18px;
+      // height: @lotBtnHeight;
       margin-top: 70px;
       cursor: pointer;
       border: none;
+    }
+  }
+}
+
+@media(max-width: 768px) {
+  .comment {
+
+    &-content {
+      display: flex;
+      flex-direction: column;
+
+      width: auto;
+
+      .comment-thanks {
+        font-size: 20px;
+      }
+
+      .comment-note {
+        width: 90vw;
+        padding: 15px 20px;
+        border-radius: 10px;
+        background: #ffffff;
+
+        .comment-note-special {
+          font-size: 14px;
+        }
+
+        font-size: 12px;
+
+      }
+
+      .comment-btn {
+        font-size: 14px;
+        margin: 15px auto;
+      }
     }
   }
 }

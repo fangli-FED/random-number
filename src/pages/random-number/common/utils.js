@@ -17,3 +17,24 @@ export function stringToIntHash(str, lowerBound = 1, upperBound = 500) {
 export function randomSort() {
   return Math.ceil(Math.random() * 3) - 2;
 }
+
+// throwttle func
+export function throwttle(func, delay) {
+  let timer = null;
+
+  return function () {
+    const _this = this;
+
+    // eslint-disable-next-line prefer-rest-params
+    const args = arguments;
+
+    if (timer) {
+      return;
+    }
+
+    timer = setTimeout(() => {
+      func.apply(_this, args);
+      timer = null;
+    }, delay);
+  };
+}

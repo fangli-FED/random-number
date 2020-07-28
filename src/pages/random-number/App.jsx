@@ -16,6 +16,7 @@ import Begin from './containers/Begin';
 import Selected from './containers/Selected';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
+import Verify from './containers/VerifyRandom';
 import './common/i18n';
 
 const app = () => (
@@ -28,6 +29,7 @@ const app = () => (
           <Route path="/lottery/begin" component={Begin} />
           <Route path="/lottery/selected" component={Selected} />
           <Route path="/lottery" component={Lottery} />
+          <Route path="/verify" component={Verify} />
           <Route path="/" component={HomePage} />
         </Switch>
       </div>

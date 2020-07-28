@@ -15,3 +15,7 @@ export const mnemonic = 'easy rare primary neck rotate pond giggle coil song sti
 export const randomDemoContractName = 'AElf.ContractNames.RandomDemoContract';
 
 export const consensusContractName = 'AElf.ContractNames.Consensus';
+
+export const randomContractName = 'AElf.ContractNames.RandomContract';
+
+export const randomAddress = '2LUmicHyH4RXrMjG4beDwuDsiWJESyLkgkwPdGTR8kahRzq5XS';

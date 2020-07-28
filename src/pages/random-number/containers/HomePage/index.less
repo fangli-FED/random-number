@@ -7,7 +7,8 @@
   width: 100%;
   height: 100%;
 
-  background: url(../../../../static/randomNumberbackground.jpg) no-repeat;
+  background: url(../../../../static/randomNumberbackground.jpg) no-repeat center;
+  background-size: cover;
 
   &-content{
     width: 85%;
@@ -58,7 +59,7 @@
 
     }
 
-    @contentMarginTop: 40px;
+    @contentMarginTop: 30px;
     .home-rightContent{
       width: 350px;
       height: 400px;
@@ -101,11 +102,11 @@
       }
 
       .home-inputErr{
-        margin: 10px 0 -30px;
+        margin: 10px 0 -20px;
         color: red;
       }
 
-      .home-generate{
+      .home-generate, .home-verify {
         width: 270px;
         height: 32px;
         font-size: 18px;
@@ -153,4 +154,91 @@
 
 button{
   outline:none;
+}
+
+@media(max-width: 768px) {
+  .home {
+    &-content {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      .home-leftContent {
+        width: 270px;
+        
+        display: flex;
+        flex-direction: column;
+        align-self: center;
+        margin: 0;
+
+        .home-text {
+          &-aelf {
+            font-size: 30px;
+            line-height: normal;
+          }
+
+          &-generation {
+            font-size: 35px;
+            line-height: normal;
+          }
+
+          &-generation-zh {
+            font-size: 15px;
+          }
+        }
+
+        .home-learnMore {
+          width: 80px;
+          height: 26px;
+          line-height: 26px;
+          font-size: 12px;
+        }
+
+      }
+
+      .home-rightContent {
+        background-color: transparent;
+        box-shadow: none;
+
+        width: 270px;
+        height: auto;
+
+        .home-generationRandom {
+          align-self: flex-start;
+
+          font-size: 14px;
+          margin-top: 15px;
+        }
+
+        .home-input,
+        .home-generate,
+        .home-verify {
+          margin-top: 15px;
+          width: 100%;
+        }
+
+        .home-inputErr {
+          margin: 5px 0 -10px;
+        }
+
+        .home-input {
+          &-text {
+            display: none;
+          }
+
+          &-frame {
+            width: 100%;
+          }
+          
+          input {
+            box-shadow: 0 0 10px #e2e2e2;
+            border: none;
+          }
+        }
+      }
+    }
+
+    &-bottom-bg {
+      display: none;
+    }
+  }
 }

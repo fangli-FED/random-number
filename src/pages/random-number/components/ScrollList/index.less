@@ -22,3 +22,26 @@
     }
   }
 }
+
+@media(max-width: 768px) {
+  .random-list {
+    &-title, &-content {
+      flex-direction: column;
+    }
+
+    &-title {
+      .ant-row {
+        width: 100%;
+      }
+    }
+
+    .content-list {
+      width: 100%;
+      font-size: 12px;
+
+      * {
+        font-size: 12px;
+      }
+    }
+  }
+}

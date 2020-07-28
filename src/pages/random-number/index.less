@@ -9,11 +9,17 @@ html, body, #app {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-width: 1000px;
+  // min-width: 1000px;
 }
 
 .app-content{
   width: 100%;
   height: calc(100% - 160px);
   background-color: white;
+}
+
+@media(max-width: 768px) {
+  .app-content {
+    height: calc(100% - 130px);
+  }
 }

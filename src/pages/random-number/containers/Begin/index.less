@@ -12,6 +12,13 @@
   align-items: center;
   justify-content: center;
 
+  &-list {
+    width: 100%;
+    .content-list {
+      text-align: center;
+    }
+  }
+
   &-content{
     width: 85%;
     // max-width: 1000px;
@@ -39,5 +46,20 @@
       height: @lotBtnHeight;
     }
   }
+}
 
+@media(max-width: 768px) {
+  .begin {
+    &-content {
+      padding: 26px 22px;
+
+      .begin-title {
+        font-size: 14px;
+      }
+
+      .begin-btn {
+        font-size: 14px;
+      }
+    }
+  }
 }

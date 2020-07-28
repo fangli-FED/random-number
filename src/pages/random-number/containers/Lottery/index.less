@@ -9,12 +9,13 @@
   background: no-repeat center url(../../../../static/lottery-bg.jpg);
   display: flex;
 
+  background-size: cover;
+
   @base: 50vw;
   &-content{
     margin-left: 15%;
     margin-top: 10vw;
     color: black;
-    width: @base; // 600px;
 
     .lottery-Building{
       font-size: 35px;
@@ -51,6 +52,37 @@
         cursor: pointer;
         border: none;
     }
+  }
+}
 
+@media(max-width: 768px) {
+  .lottery {
+    padding: 0 54px;
+    &-content {
+      margin: auto;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .lottery-Building {
+        font-size: 29px;
+      }
+
+      .lottery-lotSystem {
+        font-size: 36px;
+        line-height: normal;
+      }
+
+      .lottery-lotSystem-zh {
+        font-size: 12px;
+      }
+
+      .lottery-lotBtn {
+        height: 32px;
+        font-size: 14px;
+        margin: 15px auto;
+      }
+    }
   }
 }

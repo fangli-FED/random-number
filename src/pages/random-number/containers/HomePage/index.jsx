@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import PropTypes, { any } from 'prop-types';
 import AElf from 'aelf-sdk';
 import { withTranslation } from 'react-i18next';
 import {
@@ -10,8 +10,8 @@ import {
   message
 } from 'antd';
 import { If, Then, Else } from 'react-if';
-import { END_POINT, mnemonic, consensusContractName } from '../../../../common/constants';
-import { sleep, stringToIntHash } from '../../common/utils';
+import { END_POINT, mnemonic, randomAddress } from '../../../../common/constants';
+import { sleep } from '../../common/utils';
 import bottomBg from '../../../../static/randomBottomBg.png';
 import './index.less';
 
@@ -25,140 +25,153 @@ class HomePage extends React.Component {
     t: PropTypes.func.isRequired,
     i18n: PropTypes.shape({
       language: PropTypes.string,
+    }).isRequired,
+    location: PropTypes.shape({
+      state: any
     }).isRequired
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      randomNumber: false,
+      randomNumber: '',
       randomLoading: false,
       minNumber: null,
-      minErr: false,
       maxNumber: null,
-      maxErr: false,
       inputErrShow: false
     };
     this.aelf = null;
-    this.consensusContract = null;
+    this.randomContract = null;
+    this.blockHeight = null;
+    this.hash = null;
   }
 
   componentDidMount() {
     // 组件加载完成，开始获取实例
+    const { location } = this.props;
+
+    // After the verification page returns, initialize some data
+    if (location.state) {
+      const {
+        minNumber,
+        maxNumber,
+        randomNumber,
+        hash,
+        blockHeight
+      } = location.state;
+      this.setState({
+        minNumber,
+        maxNumber,
+        randomNumber,
+      });
+
+      this.hash = hash;
+      this.blockHeight = blockHeight;
+    }
+
     const aelf = new AElf(new AElf.providers.HttpProvider(END_POINT));
     this.aelf = aelf;
-    const { sha256 } = AElf.utils;
+    // const { sha256 } = AElf.utils;ß
     const wallet = AElf.wallet.getWalletByMnemonic(mnemonic);
     aelf.chain.getChainStatus()
-      .then(res => aelf.chain.contractAt(res.GenesisContractAddress, wallet))
-      .then(zeroC => zeroC.GetContractAddressByName.call(sha256(consensusContractName)))
-      .then(consensusAddress => aelf.chain.contractAt(consensusAddress, wallet))
-      .then(consensusContract => {
-        this.consensusContract = consensusContract;
+      .then(() => aelf.chain.contractAt(randomAddress, wallet))
+      .then(randomContract => {
+        this.randomContract = randomContract;
       })
+      .then(() => this.randomContract.Hello())
       .catch(err => {
         console.log('err', err);
       });
   }
 
-  getRandom = async (requestRandomTId, frequency, sign) => {
-    await sleep(4000);
-    let getRandomReadableData = false;
-    try {
-      const getRandomTId = await this.consensusContract.GetRandomNumber(requestRandomTId.TransactionId);
-      await sleep(1000);
-      let getRandomresult = await this.aelf.chain.getTxResult(getRandomTId.TransactionId);
-
-      if (getRandomresult.Status !== 'MINED') {
-        // 获取result等待时间不够,继续等待一次
-        await sleep(3000);
-        getRandomresult = await this.aelf.chain.getTxResult(getRandomTId.TransactionId);
-
-        if (getRandomresult.Status !== 'MINED') {
-          // 再获取失败直接报错
-          throw new Error({ Status: '获取数据失败' });
-        }
-      }
-
-      if (getRandomresult.Status === 'MINED') {
-        // 成功获取，返回数据
-        getRandomReadableData = getRandomresult.ReadableReturnValue.replace(/\"/g, '');
-        this.setState({
-          randomNumber: getRandomReadableData,
-          randomLoading: false
-        });
-      }
-    } catch (err) {
-      console.log(err, frequency);
-      if (err.Status !== 'MINED' && frequency < 10) {
-        // get等待时间过短重新发送请求，超过10次认为失败
-        const nextFrequency = frequency + 1;
-        await this.getRandom(requestRandomTId, nextFrequency);
-      } else if (sign) {
-        // 第二次发送随机数请求并获取失败，报错
-        this.setState({
-          randomNumber: getRandomReadableData,
-          randomLoading: false
-        });
-        message.info('请重试');
-      } else {
-        // 重新获取一次
-        await this.getClick(true);
-      }
-    }
-
-    return null;
-  }
-
-  getClick = async sign => {
+  getClick = async () => {
     const {
-      minNumber, maxNumber, minErr, maxErr
+      minNumber, maxNumber
     } = this.state;
 
-    if (maxErr || minErr || !maxNumber || !minNumber) {
+    if (maxNumber - minNumber <= 0 || !maxNumber || !minNumber) {
       this.setState({ inputErrShow: true });
       return;
     }
 
-    this.setState({
+    this.setState(() => ({
+      inputErrShow: false,
       randomLoading: true
-    });
+    }), this.getRandom);
+  }
 
-    if (this.consensusContract === null) {
+  getRandom = async () => {
+    if (this.randomContract === null) {
       // 如果componentDidMount里面还未获取到contract 实利，等待2s 才能进行合约的获取，可根据链的实际情况做修改.
       await sleep(2000);
     }
 
-    const requestRandomTId = await this.consensusContract.RequestRandomNumber(0);
-    await this.getRandom(requestRandomTId, 0, sign);
+    try {
+      const { minNumber, maxNumber } = this.state;
+      const {
+        random: randomNumber,
+        blockHeight,
+        hash
+      } = await this.randomContract.GetRandomNumber.call({
+        min: parseInt(minNumber, 10),
+        max: parseInt(maxNumber, 10)
+      });
+
+      this.blockHeight = blockHeight;
+      this.hash = hash;
+
+      this.setState({
+        randomLoading: false,
+        randomNumber
+      });
+    } catch (err) {
+      message.error(err.detail);
+    }
   }
 
   minNumberChange = e => {
-    const minNumber = e.target.value;
-    const { maxNumber } = this.state;
-    let minErr = false;
-    if (minNumber < 0 || (maxNumber && minNumber - maxNumber >= 0)) {
-      minErr = true;
-    }
-    this.setState({ minNumber, minErr, inputErrShow: false });
+    // Limit input other conceited
+    const minNumber = e.target.value.replace(/[^\d]/g, '');
+    this.setState({ minNumber });
   }
 
   maxNumberChange = e => {
-    const maxNumber = e.target.value;
-    const { minNumber } = this.state;
-    let maxErr = false;
-    if (minNumber && maxNumber - minNumber <= 0) {
-      maxErr = true;
-    }
-    this.setState({ maxNumber, maxErr, inputErrShow: false });
+    // Limit input other conceited
+    const maxNumber = e.target.value.replace(/[^\d]/g, '');
+
+    this.setState({ maxNumber });
+  }
+
+  // Processing verification logic
+  handleVerifyClick = () => {
+    const {
+      randomNumber,
+      minNumber,
+      maxNumber,
+    } = this.state;
+    const { hash, blockHeight } = this;
+    const { history } = this.props;
+    const params = {
+      randomNumber,
+      hash,
+      blockHeight,
+      minNumber,
+      maxNumber
+    };
+
+    sessionStorage.setItem('verifyData', JSON.stringify(params));
+
+    history.push({
+      pathname: '/verify',
+      state: params
+    });
   }
 
   render() {
     const {
-      randomNumber, randomLoading, minNumber, maxNumber, minErr, maxErr, inputErrShow
+      randomNumber, randomLoading, minNumber, maxNumber, inputErrShow
     } = this.state;
     const { t, i18n } = this.props;
-    const inputErr = Boolean(inputErrShow && (maxErr || minErr || !maxNumber || !minNumber));
     return (
       <div className={classPrefix}>
         <div className={`${classPrefix}-content`}>
@@ -210,7 +223,7 @@ class HomePage extends React.Component {
               {t('generate')}
             </Button>
             <div
-              className={`${classPrefix}-inputErr ${inputErr ? '' : 'hidden'}`}
+              className={`${classPrefix}-inputErr ${inputErrShow ? '' : 'hidden'}`}
             >
               {t('inputError')}
             </div>
@@ -225,16 +238,22 @@ class HomePage extends React.Component {
                 <Else>
                   <Input
                     className={`${classPrefix}-input-frame`}
+                    placeholder={t('result')}
                     value={
                       randomNumber
-                        ? stringToIntHash(randomNumber, parseInt(minNumber, 10), parseInt(maxNumber, 10))
-                        : ''
                     }
                     disabled
                   />
                 </Else>
               </If>
             </div>
+            <Button
+              className={`${classPrefix}-verify`}
+              disabled={!randomNumber}
+              onClick={this.handleVerifyClick}
+            >
+              {t('verify')}
+            </Button>
           </div>
         </div>
         <img alt="" className={`${classPrefix}-bottom-bg`} src={bottomBg} />
