@@ -30,7 +30,7 @@ export const ContentList = props => {
     <div className="content-list">
       {list.map(v => (
         <Row key={v.number} className="content-list-item">
-          <Col span={8} className="content-list-item-order">{v.order[i18n.language || 'zh']}</Col>
+          <Col span={8} className="content-list-item-order">{v.order[i18n.language || 'zh-CN']}</Col>
           <Col span={8} className="content-list-item-name">{v.name}</Col>
           <Col span={8} className="content-list-item-number">{v.number}</Col>
         </Row>
