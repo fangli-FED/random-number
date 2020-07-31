@@ -56,7 +56,15 @@ function VerifyRandom(props) {
                   {t('blockHeight')}
                   :
                 </p>
-                <p>{data.blockHeight}</p>
+                <p>
+                  <a
+                    rel="noopener noreferrer"
+                    href={`http://1.119.195.50:11104/block/${data.blockHeight}`}
+                    target="_blank"
+                  >
+                    {data.blockHeight}
+                  </a>
+                </p>
               </div>
               <div className={`${classPrefix}-detail-value`}>
                 <p>

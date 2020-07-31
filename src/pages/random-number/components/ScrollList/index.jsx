@@ -24,8 +24,6 @@ import './index.less';
 export const ContentList = props => {
   const { list = [] } = props;
   const [, i18n] = useTranslation();
-  console.log(i18n);
-  console.log(list);
   return (
     <div className="content-list">
       {list.map(v => (

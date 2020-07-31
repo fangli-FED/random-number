@@ -105,7 +105,7 @@ class Navigation extends React.Component {
     const { isPhone, isDrop } = this.state;
 
     let isRandom = true;
-    if (history.location.pathname.indexOf('lottery') > -1) { isRandom = false; }
+    if (history.location.pathname.indexOf('room') > -1) { isRandom = false; }
 
     return (
       <div className={`${classPrefix}`}>
@@ -122,7 +122,7 @@ class Navigation extends React.Component {
             <button
               type="button"
               className={`${classPrefix}-lottery button-style-clear ${isRandom ? '' : 'routerActive'}`}
-              onClick={() => this.historyPush('lottery')}
+              onClick={() => this.historyPush('room')}
             >
               {t('lottery')}
             </button>
@@ -162,7 +162,7 @@ class Navigation extends React.Component {
                   <button
                     type="button"
                     className={`${classPrefix}-lottery button-style-clear ${isRandom ? '' : 'routerActive'}`}
-                    onClick={() => this.historyPush('lottery')}
+                    onClick={() => this.historyPush('room')}
                   >
                     {t('lottery')}
                   </button>

@@ -95,7 +95,7 @@ class Footer extends React.Component {
   render() {
     const { t, history } = this.props;
     let isRandom = true;
-    if (history.location.pathname.indexOf('lottery') > -1) { isRandom = false; }
+    if (history.location.pathname.indexOf('room') > -1) { isRandom = false; }
     return (
       <div className={`${classPrefix} ${isRandom ? '' : `${classPrefix}-lottery`}`}>
         <div className={`${classPrefix}-leftContent`}>

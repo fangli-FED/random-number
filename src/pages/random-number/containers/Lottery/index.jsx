@@ -25,7 +25,7 @@ class Lottery extends React.Component {
 
   historyPush = () => {
     const { history } = this.props;
-    history.push('/lottery/comment');
+    history.push('/room/comment');
   }
 
   render() {

@@ -108,6 +108,24 @@ class HomePage extends React.Component {
 
     try {
       const { minNumber, maxNumber } = this.state;
+
+      const { TransactionId } = await this.randomContract.GetRandomNumber({
+        min: parseInt(minNumber, 10),
+        max: parseInt(maxNumber, 10)
+      });
+
+      this.getRandomValueByTxId(TransactionId, 0);
+    } catch (err) {
+      message.error(err.detail);
+    }
+  }
+
+  getRandomValueByTxId = async (txId, count) => {
+    const getRandomresult = await this.aelf.chain.getTxResult(txId);
+
+    if (getRandomresult.Status === 'MINED' || count === 10) {
+      const { minNumber, maxNumber } = this.state;
+
       const {
         random: randomNumber,
         blockHeight,
@@ -124,8 +142,9 @@ class HomePage extends React.Component {
         randomLoading: false,
         randomNumber
       });
-    } catch (err) {
-      message.error(err.detail);
+    } else {
+      await sleep(1000);
+      this.getRandomValueByTxId(txId, count + 1);
     }
   }
 
@@ -184,7 +203,7 @@ class HomePage extends React.Component {
               </Then>
             </If>
             {/* 根据产品的要求，预留一个链接 */}
-            <a className={`${classPrefix}-learnMore`} href="https://github.com/aelfProject">{t('learnMore')}</a>
+            {/* <a className={`${classPrefix}-learnMore`} href="https://github.com/aelfProject">{t('learnMore')}</a> */}
           </div>
           <div className={`${classPrefix}-rightContent`}>
             <div className={`${classPrefix}-generationRandom`}>{t('generationRandom')}</div>
@@ -237,7 +256,7 @@ class HomePage extends React.Component {
                 </Then>
                 <Else>
                   <Input
-                    className={`${classPrefix}-input-frame`}
+                    className={`${classPrefix}-input-frame ${classPrefix}-verify-value`}
                     placeholder={t('result')}
                     value={
                       randomNumber
@@ -249,7 +268,7 @@ class HomePage extends React.Component {
             </div>
             <Button
               className={`${classPrefix}-verify`}
-              disabled={!randomNumber}
+              disabled={randomNumber === ''}
               onClick={this.handleVerifyClick}
             >
               {t('verify')}

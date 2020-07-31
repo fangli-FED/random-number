@@ -10,7 +10,7 @@ const Comment = props => {
   const [t] = useTranslation();
   const { history } = props;
   function historyPush() {
-    history.push('/lottery/begin');
+    history.push('/room/begin');
   }
   return (
     <div className={classPrefix}>

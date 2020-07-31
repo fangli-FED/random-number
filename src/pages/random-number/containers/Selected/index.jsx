@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
+import { cloneDeep } from 'lodash';
 import {
   Button,
   Divider
@@ -30,16 +31,36 @@ class Selected extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      list: []
     };
+  }
+
+  componentDidMount() {
+    const { list: resultList } = this.props;
+
+    const list = resultList.map((item, index) => {
+      const newItem = cloneDeep(item);
+      newItem.order = {
+        en: `NO.${index + 1}`,
+        'zh-CN': `第${index + 1}位`
+      };
+
+      return newItem;
+    });
+
+    this.setState({
+      list,
+    });
   }
 
   confirm = () => {
     const { history } = this.props;
-    history.push('/lottery/begin');
+    history.push('/room/begin');
   }
 
   render() {
-    const { list, t } = this.props;
+    const { t } = this.props;
+    const { list } = this.state;
     return (
       <div className={classPrefix}>
         <div className={`${classPrefix}-content`}>

@@ -105,7 +105,7 @@ class Begin extends React.Component {
       const { storeRandomList: storeList, history } = this.props;
       // 存储数据到redux，selected页面通过redux获取，选中数据。
       storeList(setPersonnelData.filter((item, index) => aRandom.includes(index)));
-      history.push('/lottery/selected');
+      history.push('/room/selected');
     } catch (err) {
       message.error(err.detail);
     }

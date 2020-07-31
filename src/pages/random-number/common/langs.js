@@ -7,7 +7,7 @@ export const resources = {
   en: {
     translation: {
       randomNumber: 'Random Number',
-      lottery: 'lottery',
+      lottery: 'Room Selection Lottery',
       weChatSweep: 'WeChat sweep',
       follow: 'Follow the aelf Offical Accounts',
       order: 'order',
