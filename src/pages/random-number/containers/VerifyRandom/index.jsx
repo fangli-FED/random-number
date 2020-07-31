@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { func, object, shape } from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Divider, Button } from 'antd';
+import { verifyWeb } from '../../../../common/constants';
 import './index.less';
 
 const classPrefix = 'verify';
@@ -59,7 +60,7 @@ function VerifyRandom(props) {
                 <p>
                   <a
                     rel="noopener noreferrer"
-                    href={`http://1.119.195.50:11104/block/${data.currentBlockHeight}`}
+                    href={`${verifyWeb}/${data.currentBlockHeight}`}
                     target="_blank"
                   >
                     {data.currentBlockHeight}
@@ -74,7 +75,7 @@ function VerifyRandom(props) {
                 <p>
                   <a
                     rel="noopener noreferrer"
-                    href={`http://1.119.195.50:11104/block/${data.requestBlockHeight}`}
+                    href={`${verifyWeb}/${data.requestBlockHeight}`}
                     target="_blank"
                   >
                     {data.requestBlockHeight}
@@ -89,7 +90,7 @@ function VerifyRandom(props) {
                 <p>
                   <a
                     rel="noopener noreferrer"
-                    href={`http://1.119.195.50:11104/block/${data.randomBlockHeight}`}
+                    href={`${verifyWeb}/${data.randomBlockHeight}`}
                     target="_blank"
                   >
                     {data.randomBlockHeight}
