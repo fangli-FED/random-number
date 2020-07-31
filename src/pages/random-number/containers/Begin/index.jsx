@@ -12,8 +12,7 @@ import {
 import AElf from 'aelf-sdk';
 import {
   END_POINT,
-  mnemonic,
-  // randomDemoContractName,
+  walletPrivateKey,
   randomAddress
 } from '../../../../common/constants';
 import { sleep } from '../../common/utils';
@@ -57,10 +56,8 @@ class Begin extends React.Component {
     const aelf = new AElf(new AElf.providers.HttpProvider(END_POINT));
     this.aelf = aelf;
     // const { sha256 } = AElf.utils;
-    const wallet = AElf.wallet.getWalletByMnemonic(mnemonic);
+    const wallet = AElf.wallet.getWalletByPrivateKey(walletPrivateKey);
     aelf.chain.getChainStatus()
-      // .then(res => aelf.chain.contractAt(res.GenesisContractAddress, wallet))
-      // .then(zeroC => zeroC.GetContractAddressByName.call(sha256(randomDemoContractName)))
       .then(() => aelf.chain.contractAt(randomAddress, wallet))
       .then(randomContract => {
         this.randomContract = randomContract;
@@ -82,30 +79,48 @@ class Begin extends React.Component {
       animating: true
     });
 
+    const getRandomResult = async res => {
+      const data = await this.aelf.chain.getTxResult(res.TransactionId);
+      if (data.Status === 'MINED') {
+        const value = await this.randomContract.GetRandom.unpackOutput(data.ReturnValue);
+        const {
+          random
+        } = value;
+
+        aRandom.push(parseInt(random, 10));
+        while (aRandom.length < 5) {
+          const otherRandom = Math.ceil(Math.random() * setPersonnelData.length);
+
+          if (!aRandom.includes(otherRandom)) {
+            aRandom.push(otherRandom);
+          }
+        }
+
+        const { storeRandomList: storeList, history } = this.props;
+        // 存储数据到redux，selected页面通过redux获取，选中数据。
+        storeList(setPersonnelData.filter((item, index) => aRandom.includes(index)));
+        history.push('/room/selected');
+      } else {
+        await sleep(1000);
+        getRandomResult(res);
+      }
+    };
+
     if (this.randomContract) {
       await sleep(2000);
     }
 
     try {
-      const { random } = await this.randomContract.GetRandomNumber.call({
+      const res = await this.randomContract.RequestRandom({
         min: 1,
-        max: setPersonnelData.length
+        max: setPersonnelData.length,
+        blockInterval: 16
       });
 
-      aRandom.push(parseInt(random, 10));
-
-      while (aRandom.length < 5) {
-        const otherRandom = Math.ceil(Math.random() * setPersonnelData.length);
-
-        if (!aRandom.includes(otherRandom)) {
-          aRandom.push(otherRandom);
-        }
-      }
-
-      const { storeRandomList: storeList, history } = this.props;
-      // 存储数据到redux，selected页面通过redux获取，选中数据。
-      storeList(setPersonnelData.filter((item, index) => aRandom.includes(index)));
-      history.push('/room/selected');
+      // waiting to reach the specified block height
+      await sleep(10000);
+      const rest = await this.randomContract.GetRandom(res.TransactionId);
+      getRandomResult(rest);
     } catch (err) {
       message.error(err.detail);
     }

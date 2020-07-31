@@ -53,17 +53,56 @@ function VerifyRandom(props) {
             <div className={`${classPrefix}-detail-content`}>
               <div className={`${classPrefix}-detail-value`}>
                 <p>
-                  {t('blockHeight')}
+                  {t('currentBlockHeight')}
                   :
                 </p>
                 <p>
                   <a
                     rel="noopener noreferrer"
-                    href={`http://1.119.195.50:11104/block/${data.blockHeight}`}
+                    href={`http://1.119.195.50:11104/block/${data.currentBlockHeight}`}
                     target="_blank"
                   >
-                    {data.blockHeight}
+                    {data.currentBlockHeight}
                   </a>
+                </p>
+              </div>
+              <div className={`${classPrefix}-detail-value`}>
+                <p>
+                  {t('requestBlockHeight')}
+                  :
+                </p>
+                <p>
+                  <a
+                    rel="noopener noreferrer"
+                    href={`http://1.119.195.50:11104/block/${data.requestBlockHeight}`}
+                    target="_blank"
+                  >
+                    {data.requestBlockHeight}
+                  </a>
+                </p>
+              </div>
+              <div className={`${classPrefix}-detail-value`}>
+                <p>
+                  {t('randomBlockHeight')}
+                  :
+                </p>
+                <p>
+                  <a
+                    rel="noopener noreferrer"
+                    href={`http://1.119.195.50:11104/block/${data.randomBlockHeight}`}
+                    target="_blank"
+                  >
+                    {data.randomBlockHeight}
+                  </a>
+                </p>
+              </div>
+              <div className={`${classPrefix}-detail-value`}>
+                <p>
+                  {t('playId')}
+                  :
+                </p>
+                <p>
+                  {data.playId}
                 </p>
               </div>
               <div className={`${classPrefix}-detail-value`}>

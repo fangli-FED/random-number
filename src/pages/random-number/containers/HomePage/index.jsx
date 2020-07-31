@@ -10,7 +10,7 @@ import {
   message
 } from 'antd';
 import { If, Then, Else } from 'react-if';
-import { END_POINT, mnemonic, randomAddress } from '../../../../common/constants';
+import { END_POINT, walletPrivateKey, randomAddress } from '../../../../common/constants';
 import { sleep } from '../../common/utils';
 import bottomBg from '../../../../static/randomBottomBg.png';
 import './index.less';
@@ -57,7 +57,10 @@ class HomePage extends React.Component {
         maxNumber,
         randomNumber,
         hash,
-        blockHeight
+        currentBlockHeight,
+        requestBlockHeight,
+        randomBlockHeight,
+        playId
       } = location.state;
       this.setState({
         minNumber,
@@ -66,14 +69,20 @@ class HomePage extends React.Component {
       });
 
       this.hash = hash;
-      this.blockHeight = blockHeight;
+      this.currentBlockHeight = currentBlockHeight;
+      this.requestBlockHeight = requestBlockHeight;
+      this.randomBlockHeight = randomBlockHeight;
+      this.playId = playId;
+      this.lastMinNumber = minNumber;
+      this.lastMaxNumber = maxNumber;
     }
 
     const aelf = new AElf(new AElf.providers.HttpProvider(END_POINT));
     this.aelf = aelf;
-    // const { sha256 } = AElf.utils;ß
-    const wallet = AElf.wallet.getWalletByMnemonic(mnemonic);
+    // const { sha256 } = AElf.utils;
+    const wallet = AElf.wallet.getWalletByPrivateKey(walletPrivateKey);
     aelf.chain.getChainStatus()
+      .then(res => aelf.chain.contractAt(res.GenesisContractAddress, wallet))
       .then(() => aelf.chain.contractAt(randomAddress, wallet))
       .then(randomContract => {
         this.randomContract = randomContract;
@@ -94,57 +103,71 @@ class HomePage extends React.Component {
       return;
     }
 
+
+    const params = {
+      min: parseInt(minNumber, 10),
+      max: parseInt(maxNumber, 10),
+      blockInterval: 16
+    };
+
+    this.lastMinNumber = minNumber;
+    this.lastMaxNumber = maxNumber;
+
     this.setState(() => ({
       inputErrShow: false,
       randomLoading: true
-    }), this.getRandom);
+    }));
+
+    this.getRandom(params);
   }
 
-  getRandom = async () => {
+  getRandom = async ({ min, max, blockInterval }) => {
     if (this.randomContract === null) {
       // 如果componentDidMount里面还未获取到contract 实利，等待2s 才能进行合约的获取，可根据链的实际情况做修改.
       await sleep(2000);
     }
+    const getRandomResult = async res => {
+      const data = await this.aelf.chain.getTxResult(res.TransactionId, { sync: true });
+      if (data.Status === 'MINED') {
+        const value = await this.randomContract.GetRandom.unpackOutput(data.ReturnValue);
+        const {
+          hash,
+          random: randomNumber,
+          playId,
+          randomBlockHeight,
+          requestBlockHeight,
+          currentBlockHeight
+        } = value;
+        console.log(value);
+        this.currentBlockHeight = currentBlockHeight;
+        this.requestBlockHeight = requestBlockHeight;
+        this.randomBlockHeight = randomBlockHeight;
+        this.playId = playId;
+        this.hash = hash;
+
+        this.setState({
+          randomLoading: false,
+          randomNumber
+        });
+      } else {
+        await sleep(1000);
+        getRandomResult(res);
+      }
+    };
 
     try {
-      const { minNumber, maxNumber } = this.state;
-
-      const { TransactionId } = await this.randomContract.GetRandomNumber({
-        min: parseInt(minNumber, 10),
-        max: parseInt(maxNumber, 10)
+      const res = await this.randomContract.RequestRandom({
+        min,
+        max,
+        blockInterval
       });
 
-      this.getRandomValueByTxId(TransactionId, 0);
+      // waiting to reach the specified block height
+      await sleep(10000);
+      const rest = await this.randomContract.GetRandom(res.TransactionId);
+      getRandomResult(rest);
     } catch (err) {
       message.error(err.detail);
-    }
-  }
-
-  getRandomValueByTxId = async (txId, count) => {
-    const getRandomresult = await this.aelf.chain.getTxResult(txId);
-
-    if (getRandomresult.Status === 'MINED' || count === 10) {
-      const { minNumber, maxNumber } = this.state;
-
-      const {
-        random: randomNumber,
-        blockHeight,
-        hash
-      } = await this.randomContract.GetRandomNumber.call({
-        min: parseInt(minNumber, 10),
-        max: parseInt(maxNumber, 10)
-      });
-
-      this.blockHeight = blockHeight;
-      this.hash = hash;
-
-      this.setState({
-        randomLoading: false,
-        randomNumber
-      });
-    } else {
-      await sleep(1000);
-      this.getRandomValueByTxId(txId, count + 1);
     }
   }
 
@@ -164,16 +187,26 @@ class HomePage extends React.Component {
   // Processing verification logic
   handleVerifyClick = () => {
     const {
-      randomNumber,
-      minNumber,
-      maxNumber,
+      randomNumber
     } = this.state;
-    const { hash, blockHeight } = this;
+    const {
+      hash,
+      currentBlockHeight,
+      requestBlockHeight,
+      randomBlockHeight,
+      playId,
+      lastMinNumber: minNumber,
+      lastMaxNumber: maxNumber
+    } = this;
+
     const { history } = this.props;
     const params = {
       randomNumber,
       hash,
-      blockHeight,
+      currentBlockHeight,
+      requestBlockHeight,
+      randomBlockHeight,
+      playId,
       minNumber,
       maxNumber
     };
