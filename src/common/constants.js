@@ -9,7 +9,6 @@ export const API_PATH = {
 };
 
 export const END_POINT = '/chain';
-// export const END_POINT = 'http://127.0.0.1:1235';
 
 export const mnemonic = 'easy rare primary neck rotate pond giggle coil song sting small palace';
 
@@ -25,4 +24,4 @@ export const randomContractName = 'AElf.ContractNames.RandomContract';
 
 export const randomAddress = '2YkKkNZKCcsfUsGwCfJ6wyTx5NYLgpCg1stBuRT4z5ep3psXNG';
 
-export const verifyWeb = 'https://explorer-test-side01.aelf.io/block';
+export const verifyWeb = 'https://tdvv-explorer-test.aelf.io/block';

@@ -126,50 +126,73 @@ class HomePage extends React.Component {
       // 如果componentDidMount里面还未获取到contract 实利，等待2s 才能进行合约的获取，可根据链的实际情况做修改.
       await sleep(2000);
     }
-    const getRandomResult = async res => {
-      const data = await this.aelf.chain.getTxResult(res.TransactionId, { sync: true });
-      if (data.Status === 'MINED') {
-        const value = await this.randomContract.GetRandom.unpackOutput(data.ReturnValue);
-        const {
-          hash,
-          random: randomNumber,
-          playId,
-          randomBlockHeight,
-          requestBlockHeight,
-          currentBlockHeight
-        } = value;
-        console.log(value);
-        this.currentBlockHeight = currentBlockHeight;
-        this.requestBlockHeight = requestBlockHeight;
-        this.randomBlockHeight = randomBlockHeight;
-        this.playId = playId;
-        this.hash = hash;
 
-        this.setState({
-          randomLoading: false,
-          randomNumber
-        });
-      } else {
-        await sleep(1000);
-        getRandomResult(res);
+    const isCanGetRandom = async randomHeight => {
+      const currentBlockHeight = await this.aelf.chain.getBlockHeight.call();
+      if (parseInt(randomHeight, 10) <= currentBlockHeight) {
+        return true;
       }
+
+      await sleep(1500);
+      const value = await isCanGetRandom(randomHeight);
+      return value;
     };
 
     try {
-      const res = await this.randomContract.RequestRandom({
+      const requestRandomRes = await this.randomContract.RequestRandom({
         min,
         max,
         blockInterval
       });
 
-      // waiting to reach the specified block height
-      await sleep(10000);
-      const rest = await this.randomContract.GetRandom(res.TransactionId);
-      getRandomResult(rest);
+      // get generate random block height
+      const randomHeight = await this.getTxResult(requestRandomRes, async data => {
+        const { randomBlockHeight } = await this.randomContract.RequestRandom.unpackOutput(data.ReturnValue);
+        return randomBlockHeight;
+      });
+
+      // current block height is heighter then generate random
+      if (await isCanGetRandom(randomHeight)) {
+        const rest = await this.randomContract.GetRandom(requestRandomRes.TransactionId);
+        this.getTxResult(rest, async data => {
+          const {
+            hash,
+            random: randomNumber,
+            playId,
+            randomBlockHeight,
+            requestBlockHeight,
+            currentBlockHeight
+          } = await this.randomContract.GetRandom.unpackOutput(data.ReturnValue);
+
+          this.currentBlockHeight = currentBlockHeight;
+          this.requestBlockHeight = requestBlockHeight;
+          this.randomBlockHeight = randomBlockHeight;
+          this.playId = playId;
+          this.hash = hash;
+
+          this.setState({
+            randomLoading: false,
+            randomNumber
+          });
+        });
+      }
     } catch (err) {
       message.error(err.detail);
     }
   }
+
+  getTxResult = async (res, callback = async () => {}) => {
+    const data = await this.aelf.chain.getTxResult(res.TransactionId);
+
+    if (data.Status === 'MINED') {
+      const value = await callback(data);
+      return value;
+    }
+
+    await sleep(1500);
+    const value = await this.getTxResult(res, callback);
+    return value;
+  };
 
   minNumberChange = e => {
     // Limit input other conceited
