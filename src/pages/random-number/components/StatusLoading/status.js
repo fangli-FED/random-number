@@ -1,10 +1,9 @@
 export const STATUS = [
   'request',
-  // 'getCurrentBlockHeigh',
-  'generateid',
+  'getCurrentBlockHeigh',
   'confirmBlockHeight',
-  'producttionBlock',
   'goheight',
+  'producttionBlock',
   'complateHash',
   'complateSign',
   'generateRandom',

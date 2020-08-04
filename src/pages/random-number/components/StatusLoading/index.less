@@ -18,6 +18,13 @@
 
       margin-bottom: 10px;
 
+      &:first-child, &:nth-child(4), &:last-child {
+        p {
+          font-size: 14px;
+          font-weight: 600;
+        }
+      }
+
       p {
         margin-bottom: 10px;
         font-size: 12px;
@@ -82,7 +89,7 @@
     pointer-events: none;
 
     &::after {
-      opacity: .4;
+      opacity: .6;
       pointer-events: auto;
     }
   }
