@@ -24,4 +24,4 @@ export const randomContractName = 'AElf.ContractNames.RandomContract';
 
 export const randomAddress = '2YkKkNZKCcsfUsGwCfJ6wyTx5NYLgpCg1stBuRT4z5ep3psXNG';
 
-export const verifyWeb = 'https://tdvv-explorer-test.aelf.io/block';
+export const verifyWeb = 'https://tdvv-explorer-test.aelf.io';

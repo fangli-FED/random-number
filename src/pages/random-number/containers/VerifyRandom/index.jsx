@@ -54,28 +54,13 @@ function VerifyRandom(props) {
             <div className={`${classPrefix}-detail-content`}>
               <div className={`${classPrefix}-detail-value`}>
                 <p>
-                  {t('currentBlockHeight')}
-                  :
-                </p>
-                <p>
-                  <a
-                    rel="noopener noreferrer"
-                    href={`${verifyWeb}/${data.currentBlockHeight}`}
-                    target="_blank"
-                  >
-                    {data.currentBlockHeight}
-                  </a>
-                </p>
-              </div>
-              <div className={`${classPrefix}-detail-value`}>
-                <p>
                   {t('requestBlockHeight')}
                   :
                 </p>
                 <p>
                   <a
                     rel="noopener noreferrer"
-                    href={`${verifyWeb}/${data.requestBlockHeight}`}
+                    href={`${verifyWeb}/block/${data.requestBlockHeight}`}
                     target="_blank"
                   >
                     {data.requestBlockHeight}
@@ -90,10 +75,25 @@ function VerifyRandom(props) {
                 <p>
                   <a
                     rel="noopener noreferrer"
-                    href={`${verifyWeb}/${data.randomBlockHeight}`}
+                    href={`${verifyWeb}/block/${data.randomBlockHeight}`}
                     target="_blank"
                   >
                     {data.randomBlockHeight}
+                  </a>
+                </p>
+              </div>
+              <div className={`${classPrefix}-detail-value`}>
+                <p>
+                  {t('currentBlockHeight')}
+                  :
+                </p>
+                <p>
+                  <a
+                    rel="noopener noreferrer"
+                    href={`${verifyWeb}/block/${data.currentBlockHeight}`}
+                    target="_blank"
+                  >
+                    {data.currentBlockHeight}
                   </a>
                 </p>
               </div>
@@ -103,7 +103,13 @@ function VerifyRandom(props) {
                   :
                 </p>
                 <p>
-                  {data.playId}
+                  <a
+                    rel="noopener noreferrer"
+                    href={`${verifyWeb}/tx/${data.playId}`}
+                    target="_blank"
+                  >
+                    {data.playId}
+                  </a>
                 </p>
               </div>
               <div className={`${classPrefix}-detail-value`}>
@@ -113,6 +119,11 @@ function VerifyRandom(props) {
                 </p>
                 <p>{data.hash}</p>
               </div>
+              <p className={`${classPrefix}-desc`}>
+                {
+                  t('desc')
+                }
+              </p>
               <Button
                 type="primary"
                 className={`${classPrefix}-detail-btn`}

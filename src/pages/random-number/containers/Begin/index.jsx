@@ -107,7 +107,7 @@ class Begin extends React.Component {
         return randomBlockHeight;
       });
 
-      // current block height is heighter then generate ranom
+      // current block height is heighter then generate random
       if (await isCanGetRandom(randomHeight)) {
         const rest = await this.randomContract.GetRandom(requestRandomRes.TransactionId);
         this.getTxResult(rest, async data => {

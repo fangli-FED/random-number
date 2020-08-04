@@ -6,13 +6,13 @@ import { withTranslation } from 'react-i18next';
 import {
   Input,
   Button,
-  Spin,
   message
 } from 'antd';
-import { If, Then, Else } from 'react-if';
+import { If, Then } from 'react-if';
 import { END_POINT, walletPrivateKey, randomAddress } from '../../../../common/constants';
 import { sleep } from '../../common/utils';
 import bottomBg from '../../../../static/randomBottomBg.png';
+import StatusLoading from '../../components/StatusLoading';
 import './index.less';
 
 const classPrefix = 'home';
@@ -38,7 +38,8 @@ class HomePage extends React.Component {
       randomLoading: false,
       minNumber: null,
       maxNumber: null,
-      inputErrShow: false
+      inputErrShow: false,
+      currentStep: 0,
     };
     this.aelf = null;
     this.randomContract = null;
@@ -139,22 +140,55 @@ class HomePage extends React.Component {
     };
 
     try {
+      await sleep(500);
+      this.setState({
+        currentStep: 1,
+      });
+
       const requestRandomRes = await this.randomContract.RequestRandom({
         min,
         max,
         blockInterval
       });
+      this.setState({
+        currentStep: 2,
+      });
 
       // get generate random block height
       const randomHeight = await this.getTxResult(requestRandomRes, async data => {
+        this.setState({
+          currentStep: 3
+        });
         const { randomBlockHeight } = await this.randomContract.RequestRandom.unpackOutput(data.ReturnValue);
         return randomBlockHeight;
       });
 
       // current block height is heighter then generate random
       if (await isCanGetRandom(randomHeight)) {
+        this.setState({
+          currentStep: 4
+        });
         const rest = await this.randomContract.GetRandom(requestRandomRes.TransactionId);
+        await sleep(800);
+        this.setState({
+          currentStep: 5
+        });
+
+        await sleep(700);
+        this.setState({
+          currentStep: 6
+        });
+
+        await sleep(600);
+        this.setState({
+          currentStep: 7
+        });
         this.getTxResult(rest, async data => {
+          this.setState({
+            currentStep: 8
+          });
+
+          await sleep(100);
           const {
             hash,
             random: randomNumber,
@@ -163,6 +197,9 @@ class HomePage extends React.Component {
             requestBlockHeight,
             currentBlockHeight
           } = await this.randomContract.GetRandom.unpackOutput(data.ReturnValue);
+          this.setState({
+            currentStep: 9
+          });
 
           this.currentBlockHeight = currentBlockHeight;
           this.requestBlockHeight = requestBlockHeight;
@@ -172,6 +209,7 @@ class HomePage extends React.Component {
 
           this.setState({
             randomLoading: false,
+            currentStep: 0,
             randomNumber
           });
         });
@@ -244,7 +282,7 @@ class HomePage extends React.Component {
 
   render() {
     const {
-      randomNumber, randomLoading, minNumber, maxNumber, inputErrShow
+      randomNumber, randomLoading, minNumber, maxNumber, inputErrShow, currentStep
     } = this.state;
     const { t, i18n } = this.props;
     return (
@@ -262,73 +300,68 @@ class HomePage extends React.Component {
             {/* <a className={`${classPrefix}-learnMore`} href="https://github.com/aelfProject">{t('learnMore')}</a> */}
           </div>
           <div className={`${classPrefix}-rightContent`}>
-            <div className={`${classPrefix}-generationRandom`}>{t('generationRandom')}</div>
-            <div className={`${classPrefix}-input`}>
-              <span className={`${classPrefix}-input-text`}>
-                {t('minNumber')}
-              </span>
-              <Input
-                className={`${classPrefix}-input-frame`}
-                allowClear
-                onChange={this.minNumberChange}
-                value={minNumber}
-                placeholder={t('minPlaceholder')}
-                disabled={randomLoading}
-              />
-            </div>
-            <div className={`${classPrefix}-input`}>
-              <span className={`${classPrefix}-input-text`}>
-                {t('maxNumber')}
-              </span>
-              <Input
-                className={`${classPrefix}-input-frame`}
-                allowClear
-                onChange={this.maxNumberChange}
-                value={maxNumber}
-                placeholder={t('maxPlaceholder')}
-                disabled={randomLoading}
-              />
-            </div>
-            <Button
-              type="primary"
-              className={`${classPrefix}-generate`}
-              onClick={this.getClick}
-              disabled={randomLoading}
+            <StatusLoading
+              condition={randomLoading}
+              currentStep={currentStep}
             >
-              {t('generate')}
-            </Button>
-            <div
-              className={`${classPrefix}-inputErr ${inputErrShow ? '' : 'hidden'}`}
-            >
-              {t('inputError')}
-            </div>
-            <div className={`${classPrefix}-input`}>
-              <span className={`${classPrefix}-input-text text-weight`}>
-                {`${t('result')} `}
-              </span>
-              <If condition={randomLoading}>
-                <Then>
-                  <Spin />
-                </Then>
-                <Else>
-                  <Input
-                    className={`${classPrefix}-input-frame ${classPrefix}-verify-value`}
-                    placeholder={t('result')}
-                    value={
-                      randomNumber
-                    }
-                    disabled
-                  />
-                </Else>
-              </If>
-            </div>
-            <Button
-              className={`${classPrefix}-verify`}
-              disabled={randomNumber === ''}
-              onClick={this.handleVerifyClick}
-            >
-              {t('verify')}
-            </Button>
+              <div className={`${classPrefix}-generationRandom`}>{t('generationRandom')}</div>
+              <div className={`${classPrefix}-input`}>
+                <span className={`${classPrefix}-input-text`}>
+                  {t('minNumber')}
+                </span>
+                <Input
+                  className={`${classPrefix}-input-frame`}
+                  allowClear
+                  onChange={this.minNumberChange}
+                  value={minNumber}
+                  placeholder={t('minPlaceholder')}
+                />
+              </div>
+              <div className={`${classPrefix}-input`}>
+                <span className={`${classPrefix}-input-text`}>
+                  {t('maxNumber')}
+                </span>
+                <Input
+                  className={`${classPrefix}-input-frame`}
+                  allowClear
+                  onChange={this.maxNumberChange}
+                  value={maxNumber}
+                  placeholder={t('maxPlaceholder')}
+                />
+              </div>
+              <Button
+                type="primary"
+                className={`${classPrefix}-generate`}
+                onClick={this.getClick}
+              >
+                {t('generate')}
+              </Button>
+              <div
+                className={`${classPrefix}-inputErr ${inputErrShow ? '' : 'hidden'}`}
+              >
+                {t('inputError')}
+              </div>
+              <div className={`${classPrefix}-input`}>
+                <span className={`${classPrefix}-input-text text-weight`}>
+                  {`${t('result')} `}
+                </span>
+                <Input
+                  className={`${classPrefix}-input-frame ${classPrefix}-verify-value`}
+                  placeholder={t('result')}
+                  value={
+                    randomNumber
+                  }
+                  disabled
+                />
+              </div>
+              <Button
+                className={`${classPrefix}-verify`}
+                disabled={randomNumber === ''}
+                onClick={this.handleVerifyClick}
+              >
+                {t('verify')}
+              </Button>
+            </StatusLoading>
           </div>
         </div>
         <img alt="" className={`${classPrefix}-bottom-bg`} src={bottomBg} />
