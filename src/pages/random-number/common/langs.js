@@ -112,7 +112,7 @@ export const resources = {
       complateSign: '正在计算当前签名-sign',
       generateRandom: '正在生成随机数',
       gettingRandom: '正在获取随机数',
-      desc: '单击上面的蓝色字体以跳到块浏览器以查看详细信息'
+      desc: '单击上方的蓝色字体，跳转到区块浏览器以查看详细信息'
     }
   }
 };
