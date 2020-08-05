@@ -97,7 +97,7 @@ class Begin extends React.Component {
     try {
       const requestRandomRes = await this.randomContract.RequestRandom({
         min: 1,
-        max: setPersonnelData.length,
+        max: setPersonnelData.length + 1,
         blockInterval: 16
       });
 

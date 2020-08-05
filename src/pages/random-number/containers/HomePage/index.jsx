@@ -36,8 +36,8 @@ class HomePage extends React.Component {
     this.state = {
       randomNumber: '',
       randomLoading: false,
-      minNumber: null,
-      maxNumber: null,
+      minNumber: 0,
+      maxNumber: 10,
       inputErrShow: false,
       currentStep: 0,
     };
@@ -107,7 +107,7 @@ class HomePage extends React.Component {
 
     const params = {
       min: parseInt(minNumber, 10),
-      max: parseInt(maxNumber, 10),
+      max: parseInt(maxNumber, 10) + 1,
       blockInterval: 16
     };
 
