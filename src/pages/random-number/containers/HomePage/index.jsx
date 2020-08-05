@@ -41,6 +41,9 @@ class HomePage extends React.Component {
       inputErrShow: false,
       currentStep: 0,
     };
+    const { minNumber, maxNumber } = this.state;
+    this.minNumber = minNumber;
+    this.maxNumber = maxNumber;
     this.aelf = null;
     this.randomContract = null;
     this.blockHeight = null;
@@ -99,7 +102,7 @@ class HomePage extends React.Component {
       minNumber, maxNumber
     } = this.state;
 
-    if (maxNumber - minNumber <= 0 || !maxNumber || !minNumber) {
+    if (maxNumber - minNumber <= 0 || parseInt(maxNumber, 10) < 0 || parseInt(minNumber, 10) < 0) {
       this.setState({ inputErrShow: true });
       return;
     }
