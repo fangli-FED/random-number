@@ -2,12 +2,11 @@ import React from 'react';
 import {
   bool,
   number,
-  func,
-  element
+  string,
+  arrayOf
 } from 'prop-types';
 import { If, Then } from 'react-if';
 import { withTranslation } from 'react-i18next';
-import { STATUS } from './status';
 import './index.less';
 
 function getClassBycurrentStep(index, currentStep) {
@@ -22,11 +21,10 @@ function getClassBycurrentStep(index, currentStep) {
   return '';
 }
 
-function StatusLoading({
-  children,
+function StepLoading({
   condition,
   currentStep,
-  t
+  steps
 }) {
   const CLASS_PREX = 'status-loading';
   return (
@@ -35,12 +33,12 @@ function StatusLoading({
         <Then>
           <div className={`${CLASS_PREX}-status-container`}>
             {
-              STATUS.map((item, index) => (
+              steps.map((item, index) => (
                 <div className={`${CLASS_PREX}-status-item`} key={item}>
                   <p className={getClassBycurrentStep(index, currentStep)}>
-                    {t(`${item}`)}
+                    {item}
                   </p>
-                  <If condition={STATUS.length !== (index + 1)}>
+                  <If condition={steps.length !== (index + 1)}>
                     <Then>
                       <div className={`${getClassBycurrentStep(index, currentStep)} circle`} />
                     </Then>
@@ -49,28 +47,22 @@ function StatusLoading({
               ))
             }
           </div>
+          <div className={`${CLASS_PREX}-blur`} />
         </Then>
       </If>
-      <div
-        className={condition ? `${CLASS_PREX}-container ${CLASS_PREX}-blur` : `${CLASS_PREX}-container`}
-      >
-        {children}
-      </div>
     </div>
   );
 }
 
-StatusLoading.propTypes = {
+StepLoading.propTypes = {
   condition: bool,
   currentStep: number,
-  t: func.isRequired,
-  children: element
+  steps: arrayOf(string).isRequired,
 };
 
-StatusLoading.defaultProps = {
+StepLoading.defaultProps = {
   condition: true,
   currentStep: 0,
-  children: (<div />)
 };
 
-export default withTranslation()(StatusLoading);
+export default withTranslation()(StepLoading);
