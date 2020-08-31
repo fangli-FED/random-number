@@ -1,0 +1,101 @@
+@import '../../../../style/theme.less';
+
+@navHeight: 64px;
+@activeColor: @primary-color;
+
+.navigation{
+  width: 1200px;
+  margin: 0 auto;
+  height: @navHeight;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  font-size: 20px;
+
+  // &-container {
+  //   width: 100%;
+  //   display: flex;
+  //   align-items: center;
+  // }
+
+
+  &-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+
+    width: 100%;
+
+    .navigation-menu-left {
+      .navigation-menu-item {
+        margin-right: 50px;
+      }
+    }
+
+    .navigation-menu-right {
+      position: absolute;
+      right: 155px;
+      .navigation-menu-item {
+        margin-right: 50px;
+        &:last-child {
+          margin: 0;
+        }
+      }
+    }
+
+    .navigation-user {
+      p{
+        cursor: pointer;
+        margin: 0;
+        font-size: 15px;
+      }
+    }
+
+
+    .navigation-menu-func-area {
+      display: flex;
+      align-items: center;
+    }
+
+    .routerActive{
+      color: @activeColor;
+      text-decoration: none;
+      box-shadow: 0 1px;
+    }
+    
+    .button-style-clear{
+      background-color: inherit;
+      border:none;
+      padding: 0;
+      cursor: pointer;
+      font-size: 15px;
+      outline:none;
+  
+      &:hover{
+        color:@activeColor;
+      }
+    }
+  
+    .navigation-i18n {
+      font-size: 15px;
+      margin-right: 50px;
+    }
+  
+    .activeColor{
+      color: @activeColor;
+    }
+  }
+
+  &-content-no-login {
+    justify-content: flex-end;
+    .navigation-i18n {
+      margin: 0;
+    }
+  }
+
+  &-logo{
+    margin-right: 50px;
+    width: 91px;
+  }
+}

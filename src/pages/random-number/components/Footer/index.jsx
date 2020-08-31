@@ -93,19 +93,23 @@ class Footer extends React.Component {
   }
 
   render() {
-    const { t, history } = this.props;
-    let isRandom = true;
-    if (history.location.pathname.indexOf('room') > -1) { isRandom = false; }
+    const { t } = this.props;
+
     return (
-      <div className={`${classPrefix} ${isRandom ? '' : `${classPrefix}-lottery`}`}>
-        <div className={`${classPrefix}-leftContent`}>
-          <img className={`${classPrefix}-aelfImg`} alt="aelf logo" src={footerLogo} />
-          <div className={`${classPrefix}-introduce`}>{t('introduce')}</div>
+      <div className={`${classPrefix}`}>
+        <div className={`${classPrefix}-container`}>
+          <div className={`${classPrefix}-leftContent`}>
+            <img className={`${classPrefix}-aelfImg`} alt="aelf logo" src={footerLogo} />
+            <div className={`${classPrefix}-introduce`}>{t('introduce')}</div>
+          </div>
+          <div className={`${classPrefix}-rightContent`}>
+            <span className={`${classPrefix}-contact`}>{`${t('contactUs')}:`}</span>
+            {icons.map(iconMap)}
+          </div>
         </div>
-        <div className={`${classPrefix}-rightContent`}>
-          <span className={`${classPrefix}-contact`}>{`${t('contactUs')}:`}</span>
-          {icons.map(iconMap)}
-        </div>
+        <p className="copyright-contaniner">
+          Copyright © 2020 ælf
+        </p>
       </div>
     );
   }

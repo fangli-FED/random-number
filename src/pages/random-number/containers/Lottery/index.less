@@ -1,88 +1,48 @@
-@lotteryMargin: 16px;
-@btnHeight: 20px;
-@bgColor: rgb(38,113,210);
+@import '../../style/theme.less';
 
-.lottery{
-  width: 100%;
-  height: 100%;
-
-  background: no-repeat center url(../../../../static/lottery-bg.jpg);
+.lottery {
   display: flex;
-
+  flex: 1;
+  
+  width: 100%;
+  background: url(../../../../static/bg.jpg) no-repeat center;
   background-size: cover;
 
-  @base: 50vw;
-  &-content{
-    margin-left: 15%;
-    margin-top: 10vw;
-    color: black;
+  &-container {
+    width: 1200px;
+    margin: 0 auto;
 
-    .lottery-Building{
-      font-size: 35px;
-      line-height: 50px;
+    display: flex;
+  }
+
+  &-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+
+    h1 {
+      font-size: 60px;
+      margin-bottom: 40px;
     }
 
-    .lottery-lotSystem{
-      font-size: @base * 0.083; // 50px;
-      font-weight: 800;
-      line-height: @base * 0.083; // 50px;
-      // width: 600px;
-    }
-
-    .lottery-lotSystem-en{
-      font-size:  @base * 0.066; // 40px;
-    }
-
-    .lottery-lotSystem-zh{
-      font-size: @base * 0.033; // 20px;
-    }
-
-    @lotBtnHeight: @base * 0.058; // 35px;
-    .lottery-lotBtn{
-        min-width: 120px;
-        width: @base * 0.2; // 120px;
-        color: white;
-        background-color: @bgColor;
-        border-radius: 5px;
-        text-align: center;
-        font-size: @base * 0.03; // 18px;
-        height: @lotBtnHeight;
-        // line-height: @lotBtnHeight;
-        margin-top: 16px;
-        cursor: pointer;
-        border: none;
+    h2 {
+      font-size: 30px;
     }
   }
-}
 
-@media(max-width: 768px) {
-  .lottery {
-    padding: 0 54px;
-    &-content {
-      margin: auto;
+  &-data {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    margin-bottom: 25px;
 
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-
-      .lottery-Building {
-        font-size: 29px;
-      }
-
-      .lottery-lotSystem {
-        font-size: 36px;
-        line-height: normal;
-      }
-
-      .lottery-lotSystem-zh {
-        font-size: 12px;
-      }
-
-      .lottery-lotBtn {
-        height: 32px;
-        font-size: 14px;
-        margin: 15px auto;
-      }
+    p {
+      font-size: 18px;
     }
+  }
+
+  &-start-btn {
+    width: 120px;
   }
 }

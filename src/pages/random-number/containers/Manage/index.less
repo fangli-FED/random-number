@@ -1,0 +1,33 @@
+@import '../../style//theme.less';
+
+.manage {
+  display: flex;
+  width: 100%;
+  background: @page-background-color;
+
+  flex: 1;
+  &-content {
+    margin: auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 32vw;
+    }
+
+    .manage-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-top: 60px;
+    }
+
+    .manage-title,
+    .manage-btn,
+    .manage-checkbox {
+      margin-bottom: 10px;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+@import '../../style/theme.less';
+
+.logout {
+  width: 100%;
+  padding-bottom: 44px;
+  background-color: @page-background-color;
+
+  flex: 1;
+
+  &-container {
+    width: @page-width;
+    height: 100%;
+    margin: 0 auto;
+  }
+
+  &-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+
+    #qr-code,
+    .logout-address,
+    .logout-btn {
+      margin-bottom: 20px;
+    }
+  }
+}

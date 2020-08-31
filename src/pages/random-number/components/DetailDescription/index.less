@@ -1,0 +1,29 @@
+.detail-desc {
+  margin-bottom: 40px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+  .ant-descriptions-title {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  .ant-descriptions-item {
+    & > span {
+      &:first-child {
+        vertical-align: top;
+        width: 116px;
+        color: #9fa0a1;
+      }
+
+      &:last-child {
+        width: calc(100% - 116px);
+      }
+    }
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}

@@ -22,6 +22,7 @@ export function randomSort() {
 export function throwttle(func, delay) {
   let timer = null;
 
+  // eslint-disable-next-line func-names
   return function () {
     const _this = this;
 
@@ -38,3 +39,26 @@ export function throwttle(func, delay) {
     }, delay);
   };
 }
+
+export const isEmptyObject = obj => Object.keys(obj || {}).length === 0;
+
+/**
+ * down load QRcode
+ * @param {*} id qr parent node
+ */
+export const exportCanvanAsPng = id => {
+  const canvasElement = document.getElementById(id).children[0];
+  const MIME_TYPE = 'image/png';
+
+  const imgURL = canvasElement.toDataURL(MIME_TYPE);
+
+  const downLink = document.createElement('a');
+
+  downLink.download = `${+new Date()}.png`;
+  downLink.href = imgURL;
+  downLink.dataset.downloadurl = [MIME_TYPE, downLink.download, downLink.href].join(':');
+
+  document.body.appendChild(downLink);
+  downLink.click();
+  document.body.removeChild(downLink);
+};

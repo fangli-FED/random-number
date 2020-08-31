@@ -1,0 +1,97 @@
+@import '../../style/theme.less';
+
+.manage-detail {
+  width: 100%;
+  padding-bottom: 44px;
+  background: @page-background-color;
+
+  flex: 1;
+
+  p {
+    margin: 0;
+  }
+
+  &-value {
+    color: @primary-color;
+    font-weight: bold;
+  }
+  
+  &-container {
+    width: @page-width;
+    height: 100%;
+    // min-height: 658px;
+    margin: 0 auto;
+  }
+
+  &-seedInfo {
+    position: relative;
+
+    margin-top: -25px;
+
+    &-search-bar {
+      position: absolute;
+      top: -54px;
+      right: 0;
+    }
+  }
+
+  &-search-input {
+    width: 200px;
+    margin-right: 10px;
+  }
+
+  &-search-btn {
+    margin-right: 10px;
+  }
+
+
+  &-verify {
+    border: solid 2px #ededed;
+    h1 {
+      line-height: 40px;
+      padding-left: 25px;
+      margin: 0;
+      font-size: 16px;
+      background-color: #ededed;
+    }
+
+    &-info {
+      display: flex;
+      flex-direction: column;
+      padding: 25px;  
+
+      &-first {
+        width: 100%;
+        display: flex;
+
+        border-bottom: solid 1px #e5e5e5;
+        padding: 17px 0;
+
+        .item {
+          margin-right: 25px;
+          span {
+            display: inline-block;
+            &:first-child {
+              width: 200px
+            }
+          }
+        }
+      }
+      > .item {
+        padding: 17px 0;
+        border-bottom: solid 1px #e5e5e5;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        span {
+          display: inline-block;
+          &:first-child {
+            width: 200px
+          }
+        }
+      }
+    }
+  }
+}

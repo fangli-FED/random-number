@@ -1,17 +1,28 @@
-@fooHeight: 80px;
+@fooHeight: 164px;
 @imgSize: 180px;
 
 .footer{
   width: 100%;
   height: @fooHeight;
   color: white;
-  background-color: rgb(29,83,160);
+  background-image: linear-gradient(90deg, 
+		#3a1884 0%, 
+		#5e2ab1 100%);
   box-sizing: border-box;
-  padding-left: 50px;
 
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  flex-direction: column;
   align-items: center;
+
+  &-container {
+    display: flex;
+    
+
+    width: 1200px;
+    margin: 0 auto;
+    justify-content: space-between;
+  }
 
   &-lottery{
     background-color: rgb(121, 121, 123)
@@ -49,7 +60,6 @@
   }
 
   &-rightContent{
-    margin-right: 50px;
     display: flex;
     align-items: center;
 
@@ -63,7 +73,11 @@
       color: white;
       font-size: 24px;
     }
+  }
 
+  .copyright-contaniner {
+    text-align: center;
+    margin: 16px 0 0 0;
   }
 }
 

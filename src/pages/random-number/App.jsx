@@ -2,39 +2,80 @@
  * @file App.jsx
  * @author atom-yang
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   HashRouter,
   Switch,
-  Route,
+  Redirect
 } from 'react-router-dom';
+import { func } from 'prop-types';
+import { bindActionCreators, compose } from 'redux';
+import { connect } from 'react-redux';
+
+import AuthRoute from './components/Auth';
+import {
+  setUserInfo,
+  getUserInfo
+} from './actions/useInfo';
+import nightElfUtil from './common/nightElfUtil';
+import { ROUTER_LIST } from './route';
 import './index.less';
-import HomePage from './containers/HomePage';
-import Lottery from './containers/Lottery';
-import Comment from './containers/Comment';
-import Begin from './containers/Begin';
-import Selected from './containers/Selected';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
-import Verify from './containers/VerifyRandom';
 import './common/i18n';
+import './style/theme.less';
 
-const app = () => (
-  <>
-    <HashRouter>
-      <Navigation />
-      <div className="app-content">
-        <Switch>
-          <Route path="/room/comment" component={Comment} />
-          <Route path="/room/begin" component={Begin} />
-          <Route path="/room/selected" component={Selected} />
-          <Route path="/room" component={Lottery} />
-          <Route path="/verify" component={Verify} />
-          <Route path="/" component={HomePage} />
-        </Switch>
-      </div>
-      <Footer />
-    </HashRouter>
-  </>
+const app = ({
+  setUserInfo: setInfo
+}) => {
+  useEffect(() => {
+    nightElfUtil.getInstace();
+    if (sessionStorage.getItem('userInfo')) {
+      setInfo(JSON.parse(sessionStorage.getItem('userInfo')));
+    }
+  }, []);
+  return (
+    <>
+      <HashRouter>
+        <Navigation />
+        <div className="app-content">
+          <Switch>
+            {
+              ROUTER_LIST.map(item => (
+                <AuthRoute path={item.path} component={item.component} key={item.path} />
+              ))
+            }
+            <Redirect to={{ pathname: '/login' }} />
+          </Switch>
+        </div>
+        <Footer />
+      </HashRouter>
+    </>
+  );
+};
+
+app.propTypes = {
+  setUserInfo: func.isRequired
+};
+
+const mapStateToProps = state => ({
+  ...state
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators(
+  {
+    setUserInfo,
+    getUserInfo
+  },
+  dispatch
 );
-export default React.memo(app);
+
+const wrapper = compose(
+  React.memo,
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
+);
+
+export default wrapper(app);

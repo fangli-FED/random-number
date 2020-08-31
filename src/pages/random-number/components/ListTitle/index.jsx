@@ -15,7 +15,7 @@ const ListTitle = () => {
     <Row>
       <Col span={8} className="list-title">{t('order')}</Col>
       <Col span={8} className="list-title">{t('name')}</Col>
-      <Col span={8} className="list-title">{t('number')}</Col>
+      <Col span={8} className="list-title">{t('code')}</Col>
     </Row>
   );
 };
